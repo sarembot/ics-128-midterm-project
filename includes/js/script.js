@@ -147,3 +147,10 @@ let users = [
   saruman,
   gollum,
 ];
+
+const loginBtn = document.getElementById("loginBtn");
+const loginForm = document.getElementById("loginForm");
+
+loginForm.addEventListener("submit", (e) => {
+  // e.preventDefault();
+});

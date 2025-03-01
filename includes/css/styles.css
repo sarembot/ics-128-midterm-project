@@ -1,3 +1,16 @@
+* {
+  border: 0.1px dotted green;
+}
+
 body {
-  background-image: url("/images/home_background.jpg");
+  background-image: url("home_background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+.border-gold {
+  border: 0.1em solid #a19b81;
+  border-radius: 5px;
 }
