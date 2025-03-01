@@ -150,7 +150,24 @@ let users = [
 
 const loginBtn = document.getElementById("loginBtn");
 const loginForm = document.getElementById("loginForm");
+const homeBlock = document.getElementById("homeBlock");
 
 loginForm.addEventListener("submit", (e) => {
-  // e.preventDefault();
+  e.preventDefault();
+  // I want to run a validation to check if the user.username is in my list of users
+  // then bring up the homepage
+
+  const username = document.getElementById("usernameInput").value;
+  console.log(username);
+
+  // Really basic validation
+  // TODO: Improve to have some more strict matching conditions (or less strict - case sensitivity)
+  let usernames = [];
+  users.forEach((user) => {
+    usernames.push(user.username);
+  });
+
+  if (usernames.includes(username)) {
+    window.location.href = "home.html";
+  }
 });
