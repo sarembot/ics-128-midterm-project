@@ -14,3 +14,7 @@ body {
   border: 0.1em solid #a19b81;
   border-radius: 5px;
 }
+
+.hidden {
+  display: none;
+}

@@ -67,6 +67,43 @@ class User extends GenericUser {
 
     this._admin = false;
   }
+
+  /**
+   * Method that displays the homepage for each user after a successful login
+   * It adds a bootstrap card carousel item for each appropriate profile
+   * In the case of a normal user, it displays their profile and all admin
+   *
+   */
+  displayHomepage = (users, block) => {
+    let slideCount = 0; // Keeps track for active slide
+    let content = ``; // To store inner-carousel content
+
+    block.innerHTML = ``; // Clear previous
+
+    for (let user of users) {
+      // If it's not an admin and it's not the current user
+      if (!user.admin && this.username != user.username) continue;
+
+      content += `
+      <div class="carousel-item ${slideCount === 0 ? "active" : ""}"
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="..." alt="${user.profilePic}">
+          <div class="card-body">
+            <h5 class="card-title">${user.firstName} ${user.lastName}</h5>
+            <ul class="list-group p-2">
+              <li class="list-group-item">${user.email}</li>
+              <li class="list-group-item">${user.username}</li>
+            </ul>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+      `;
+
+      slideCount += 1;
+    }
+    block.innerHTML = content;
+  };
 }
 
 class Admin extends GenericUser {
@@ -148,26 +185,35 @@ let users = [
   gollum,
 ];
 
+const userDisplay = document.getElementById("userDisplay");
 const loginBtn = document.getElementById("loginBtn");
 const loginForm = document.getElementById("loginForm");
+const loginFormContainer = document.getElementById("loginFormContainer");
+const loginBlock = document.getElementById("loginBlock");
 const homeBlock = document.getElementById("homeBlock");
+const userCarousel = document.getElementById("userCarousel");
+const userCarouselInner = document.getElementById("userCarouselInner");
 
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
   // I want to run a validation to check if the user.username is in my list of users
   // then bring up the homepage
+  const usernameInputValue = document.getElementById("usernameInput").value;
 
-  const username = document.getElementById("usernameInput").value;
-  console.log(username);
+  let userIndex;
+  let usernames = [];
 
   // Really basic validation
   // TODO: Improve to have some more strict matching conditions (or less strict - case sensitivity)
-  let usernames = [];
   users.forEach((user) => {
     usernames.push(user.username);
   });
 
-  if (usernames.includes(username)) {
-    window.location.href = "home.html";
+  userIndex = users.findIndex((user) => usernameInputValue === user.username);
+
+  if (usernames.includes(usernameInputValue)) {
+    users[userIndex].displayHomepage(users, userCarouselInner);
+    userDisplay.classList.remove("hidden");
+    loginFormContainer.classList.add("hidden");
   }
 });
