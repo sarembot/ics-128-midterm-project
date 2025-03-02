@@ -64,9 +64,19 @@ class GenericUser {
 class User extends GenericUser {
   constructor(firstName, lastName, email, username, profilePic) {
     super(firstName, lastName, email, username, profilePic);
-
     this._admin = false;
+    User.users.push(this);
   }
+
+  // moveCurrentUserToFrontOfArray(users, index) {
+  //   console.log(index);
+  //   let item = users.splice(index, 1)[0];
+  //   console.log(item);
+  //   users.unshift(item);
+  //   console.log(users);
+  // }
+
+  static users = [];
 
   /**
    * Method that displays the homepage for each user after a successful login
@@ -74,33 +84,47 @@ class User extends GenericUser {
    * In the case of a normal user, it displays their profile and all admin
    *
    */
-  displayHomepage = (users, block) => {
+  displayHomepage = (block) => {
     let slideCount = 0; // Keeps track for active slide
     let content = ``; // To store inner-carousel content
 
     block.innerHTML = ``; // Clear previous
 
-    for (let user of users) {
+    content += `
+      <div class="carousel-item active"
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="..." alt="${this.profilePic}">
+          <div class="card-body">
+            <h5 class="card-title">${this.firstName} ${this.lastName}</h5>
+            <ul class="list-group p-2">
+              <li class="list-group-item">${this.email}</li>
+              <li class="list-group-item">${this.username}</li>
+            </ul>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+    `;
+
+    for (let admin of Admin.admins) {
       // If it's not an admin and it's not the current user
-      if (!user.admin && this.username != user.username) continue;
+      // if (!user.admin && this.username != user.username) continue;
 
       content += `
-      <div class="carousel-item ${slideCount === 0 ? "active" : ""}"
+      <div class="carousel-item"
         <div class="card" style="width: 18rem;">
-          <img class="card-img-top" src="..." alt="${user.profilePic}">
+          <img class="card-img-top" src="..." alt="${admin.profilePic}">
           <div class="card-body">
-            <h5 class="card-title">${user.firstName} ${user.lastName}</h5>
+            <h5 class="card-title">${admin.firstName} ${admin.lastName}</h5>
             <ul class="list-group p-2">
-              <li class="list-group-item">${user.email}</li>
-              <li class="list-group-item">${user.username}</li>
+              <li class="list-group-item">${admin.email}</li>
+              <li class="list-group-item">${admin.username}</li>
             </ul>
             <a href="#" class="btn btn-primary">Go somewhere</a>
           </div>
         </div>
       </div>
       `;
-
-      slideCount += 1;
     }
     block.innerHTML = content;
   };
@@ -111,7 +135,10 @@ class Admin extends GenericUser {
     super(firstName, lastName, email, username, profilePic);
 
     this._admin = true;
+    Admin.admins.push(this);
   }
+
+  static admins = [];
 }
 
 // Users
@@ -167,23 +194,8 @@ let saruman = new User(
 );
 let gollum = new User("Gollum", "", "gollum@midearth.orc", "gollum", "");
 
-let users = [
-  bilbo,
-  gandalf,
-  tomBombadil,
-  frodo,
-  samwise,
-  pippin,
-  merry,
-  gimli,
-  elrond,
-  aragorn,
-  orthoSackvilleBaggins,
-  legolas,
-  sauron,
-  saruman,
-  gollum,
-];
+console.log(User.users);
+console.log(Admin.admins);
 
 const userDisplay = document.getElementById("userDisplay");
 const loginBtn = document.getElementById("loginBtn");
@@ -200,19 +212,23 @@ loginForm.addEventListener("submit", (e) => {
   // then bring up the homepage
   const usernameInputValue = document.getElementById("usernameInput").value;
 
-  let userIndex;
   let usernames = [];
 
   // Really basic validation
   // TODO: Improve to have some more strict matching conditions (or less strict - case sensitivity)
-  users.forEach((user) => {
+  User.users.forEach((user) => {
     usernames.push(user.username);
   });
 
-  userIndex = users.findIndex((user) => usernameInputValue === user.username);
+  let userIndex = User.users.findIndex(
+    (user) => usernameInputValue === user.username
+  );
+  let currentUser = User.users[userIndex];
 
   if (usernames.includes(usernameInputValue)) {
-    users[userIndex].displayHomepage(users, userCarouselInner);
+    // currentUser.moveCurrentUserToFrontOfArray(User.users, userIndex);
+    currentUser.displayHomepage(userCarouselInner);
+
     userDisplay.classList.remove("hidden");
     loginFormContainer.classList.add("hidden");
   }
