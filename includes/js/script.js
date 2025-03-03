@@ -65,16 +65,8 @@ class User extends GenericUser {
   constructor(firstName, lastName, email, username, profilePic) {
     super(firstName, lastName, email, username, profilePic);
     this._admin = false;
-    User.users.push(this);
+    User.users.push(this); // Add this instance to list of users
   }
-
-  // moveCurrentUserToFrontOfArray(users, index) {
-  //   console.log(index);
-  //   let item = users.splice(index, 1)[0];
-  //   console.log(item);
-  //   users.unshift(item);
-  //   console.log(users);
-  // }
 
   static users = [];
 
@@ -85,25 +77,24 @@ class User extends GenericUser {
    *
    */
   displayHomepage = (block) => {
-    let slideCount = 0; // Keeps track for active slide
     let content = ``; // To store inner-carousel content
 
     block.innerHTML = ``; // Clear previous
 
     content += `
-      <div class="carousel-item active"
-        <div class="card" style="width: 18rem;">
-          <img class="card-img-top" src="..." alt="${this.profilePic}">
-          <div class="card-body">
-            <h5 class="card-title">${this.firstName} ${this.lastName}</h5>
-            <ul class="list-group p-2">
-              <li class="list-group-item">${this.email}</li>
-              <li class="list-group-item">${this.username}</li>
-            </ul>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+      <div class="carousel-item w-100 active"
+          <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="..." alt="${this.profilePic}">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
+              <h5 class="card-title">${this.firstName} ${this.lastName}</h5>
+              <ul class="list-group p-2">
+                <li class="list-group-item">${this.email}</li>
+                <li class="list-group-item">${this.username}</li>
+              </ul>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
           </div>
         </div>
-      </div>
     `;
 
     for (let admin of Admin.admins) {
@@ -111,10 +102,10 @@ class User extends GenericUser {
       // if (!user.admin && this.username != user.username) continue;
 
       content += `
-      <div class="carousel-item"
+      <div class="carousel-item w-100"
         <div class="card" style="width: 18rem;">
           <img class="card-img-top" src="..." alt="${admin.profilePic}">
-          <div class="card-body">
+          <div class="card-body d-flex justify-content-center align-items-center flex-column">
             <h5 class="card-title">${admin.firstName} ${admin.lastName}</h5>
             <ul class="list-group p-2">
               <li class="list-group-item">${admin.email}</li>
@@ -139,6 +130,73 @@ class Admin extends GenericUser {
   }
 
   static admins = [];
+
+  displayHomepage = (block) => {
+    let content = ``; // To store inner-carousel content
+
+    block.innerHTML = ``; // Clear previous
+
+    content += `
+      <div class="carousel-item w-100 active"
+          <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="..." alt="${this.profilePic}">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
+              <h5 class="card-title">${this.firstName} ${this.lastName}</h5>
+              <ul class="list-group p-2">
+                <li class="list-group-item">${this.email}</li>
+                <li class="list-group-item">${this.username}</li>
+              </ul>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+        </div>
+    `;
+
+    for (let admin of Admin.admins) {
+      // If it's not an admin and it's not the current user
+      // if (!user.admin && this.username != user.username) continue;
+      if (admin === this) continue;
+
+      content += `
+      <div class="carousel-item w-100"
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="..." alt="${admin.profilePic}">
+          <div class="card-body d-flex justify-content-center align-items-center flex-column">
+            <h5 class="card-title">${admin.firstName} ${admin.lastName}</h5>
+            <ul class="list-group p-2">
+              <li class="list-group-item">${admin.email}</li>
+              <li class="list-group-item">${admin.username}</li>
+            </ul>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+      `;
+    }
+
+    for (let user of User.users) {
+      // If it's not an admin and it's not the current user
+      // if (!user.admin && this.username != user.username) continue;
+
+      content += `
+      <div class="carousel-item w-100"
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="..." alt="${user.profilePic}">
+          <div class="card-body d-flex justify-content-center align-items-center flex-column">
+            <h5 class="card-title">${user.firstName} ${user.lastName}</h5>
+            <ul class="list-group p-2">
+              <li class="list-group-item">${user.email}</li>
+              <li class="list-group-item">${user.username}</li>
+            </ul>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+      `;
+    }
+
+    block.innerHTML = content;
+  };
 }
 
 // Users
@@ -213,17 +271,21 @@ loginForm.addEventListener("submit", (e) => {
   const usernameInputValue = document.getElementById("usernameInput").value;
 
   let usernames = [];
+  let allUsers = User.users.concat(Admin.admins);
+  console.log(allUsers);
 
   // Really basic validation
   // TODO: Improve to have some more strict matching conditions (or less strict - case sensitivity)
-  User.users.forEach((user) => {
+  allUsers.forEach((user) => {
     usernames.push(user.username);
   });
 
-  let userIndex = User.users.findIndex(
+  console.log(usernames);
+
+  let userIndex = allUsers.findIndex(
     (user) => usernameInputValue === user.username
   );
-  let currentUser = User.users[userIndex];
+  let currentUser = allUsers[userIndex];
 
   if (usernames.includes(usernameInputValue)) {
     // currentUser.moveCurrentUserToFrontOfArray(User.users, userIndex);
