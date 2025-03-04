@@ -100,7 +100,7 @@ class User extends GenericUser {
     navItemsBlockContent += `
           <div class="tab-pane container fade show active" id=${this.username} role="tabpanel">
             <div class="card w-100 m-0">
-              <img class="card-img-top" src="..." alt="${this.profilePic}">
+              <img class="card-img-top rounded img" src="${this.profilePic}" alt="${this.firstName} ${this.lastName}">
               <div class="card-body d-flex flex-column justify-content-center align-items-center">
                 <h5 class="card-title">${this.firstName} ${this.lastName}</h5>
                 <ul class="list-group p-2">
@@ -119,7 +119,7 @@ class User extends GenericUser {
       navItemsBlockContent += `
           <div class="tab-pane container fade" id=${admin.username} role="tabpanel">
             <div class="card w-100 m-0">
-              <img class="card-img-top" src="..." alt="${admin.profilePic}">
+              <img class="card-img-top" src="${admin.profilePic}" alt="${admin.firstName} ${admin.lastName}">
               <div class="card-body d-flex flex-column justify-content-center align-items-center">
                 <h5 class="card-title">${admin.firstName} ${admin.lastName}</h5>
                 <ul class="list-group p-2">
@@ -163,7 +163,7 @@ class Admin extends GenericUser {
     content += `
       <div class="carousel-item w-100 active"
           <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="..." alt="${this.profilePic}">
+            <img class="card-img-top" src="${this.profilePic}" alt="${this.firstName} ${this.lastName}">
             <div class="card-body d-flex flex-column justify-content-center align-items-center">
               <h5 class="card-title">${this.firstName} ${this.lastName}</h5>
               <ul class="list-group p-2">
@@ -184,7 +184,7 @@ class Admin extends GenericUser {
       content += `
       <div class="carousel-item w-100"
         <div class="card" style="width: 18rem;">
-          <img class="card-img-top" src="..." alt="${admin.profilePic}">
+          <img class="card-img-top" src="${admin.profilePic}" alt="Gandalf the Grey">
           <div class="card-body d-flex justify-content-center align-items-center flex-column">
             <h5 class="card-title">${admin.firstName} ${admin.lastName}</h5>
             <ul class="list-group p-2">
@@ -224,57 +224,125 @@ class Admin extends GenericUser {
 }
 
 // Users
-let bilbo = new Admin("Bilbo", "Baggins", "bilbo@shire.orc", "bilbo", "");
+let bilbo = new Admin(
+  "Bilbo",
+  "Baggins",
+  "bilbo@shire.orc",
+  "bilbo",
+  "images/bilbo.webp"
+);
+
 let gandalf = new Admin(
   "Gandalf",
   "the Grey",
   "gandalf@shire.orc",
   "gandalf",
-  ""
+  "images/gandalf_profilepic.jpeg"
 );
+
 let tomBombadil = new Admin(
   "Tom",
   "Bombadil",
   "tommysmokes@shire.orc",
   "tombom",
-  ""
+  "images/tombom.webp"
 );
-let frodo = new User("Frodo", "Baggins", "frodo@shire.orc", "frodo", "");
-let samwise = new User("Samwise", "Gamgee", "sammyg@shire.orc", "samwise", "");
-let pippin = new User("Peregrin", "Took", "pippin@shire.orc", "pippin", "");
-let merry = new User("Meriadoc", "Brandybuck", "merry@shire.orc", "merry", "");
-let gimli = new User("Gimli", "Son of Glóin", "gimli@dwarf.orc", "gimli", "");
+
+let frodo = new User(
+  "Frodo",
+  "Baggins",
+  "frodo@shire.orc",
+  "frodo",
+  "images/frodo.webp"
+);
+
+let samwise = new User(
+  "Samwise",
+  "Gamgee",
+  "sammyg@shire.orc",
+  "samwise",
+  "images/samwise.webp"
+);
+
+let pippin = new User(
+  "Peregrin",
+  "Took",
+  "pippin@shire.orc",
+  "pippin",
+  "images/pippin.webp"
+);
+
+let merry = new User(
+  "Meriadoc",
+  "Brandybuck",
+  "merry@shire.orc",
+  "merry",
+  "images/merry.webp"
+);
+
+let gimli = new User(
+  "Gimli",
+  "Son of Glóin",
+  "gimli@dwarf.orc",
+  "gimli",
+  "images/gimli.webp"
+);
+
 let elrond = new User(
   "Elrond",
   "Half-elven",
   "elrond@rivendell.orc",
   "elrond",
-  ""
+  "images/elrond.webp"
 );
-let aragorn = new User("Aragorn", "", "aragorn@gondor.orc", "aragorn", "");
-let orthoSackvilleBaggins = new User(
-  "Orth",
+
+let aragorn = new User(
+  "Aragorn",
+  "",
+  "aragorn@gondor.orc",
+  "aragorn",
+  "images/aragorn.webp"
+);
+
+let lobelia = new User(
+  "Lobelia",
   "Sackville-Baggins",
-  "orthopedicsurgeon@shire.orc",
-  "ortho",
-  ""
+  "lobeliosity@shire.orc",
+  "lobelia",
+  "images/lobelia.webp"
 );
+
 let legolas = new User(
   "Legolas",
   ", son of Thranduil",
   "legomyeggo@rivendell.orc",
-  "samwise",
-  ""
+  "legolas",
+  "images/legolas.webp"
 );
-let sauron = new User("Sauron", "", "sauron@midearth.orc", "sauron", "");
+
+let sauron = new User(
+  "Sauron",
+  "",
+  "sauron@midearth.orc",
+  "sauron",
+  "images/sauron.webp"
+);
+
 let saruman = new User(
   "Saruman",
   "the White",
   "saruman@midearth.orc",
   "saruman",
-  ""
+  "images/saruman.webp"
 );
-let gollum = new User("Gollum", "", "gollum@midearth.orc", "gollum", "");
+
+let gollum = new User(
+  "Gollum",
+  "",
+  "gollum@midearth.orc",
+  "gollum",
+  "images/gollum.webp"
+);
 
 console.log(User.users);
 console.log(Admin.admins);
