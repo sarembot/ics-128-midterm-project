@@ -67,10 +67,17 @@
       </div>
 
       <!-- Carousel -->
-      <div class="container hidden" id="userDisplay">
-        <ul id="navList" class="nav nav-tabs"></ul>
+      <div class="container hidden" id="userDisplayContainer">
+        <div class="container" id="adminDisplay">
+          <ul id="adminNavList" class="nav nav-tabs"></ul>
 
-        <div id="navItemsBlock" class="tab-content w-100 m-0"></div>
+          <div id="adminNavItems" class="tab-content w-100 m-0"></div>
+        </div>
+        <div class="container" id="userDisplay">
+          <ul id="userNavList" class="nav nav-tabs"></ul>
+
+          <div id="userNavItems" class="tab-content w-100 m-0"></div>
+        </div>
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

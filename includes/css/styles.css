@@ -18,3 +18,11 @@ body {
 .hidden {
   display: none;
 }
+
+.card-img-top {
+  max-width: 100%;
+  max-height: 300px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}

@@ -1,5 +1,10 @@
 // MITCHELL SAREMBA - ICS128 - Midterm
 
+/**
+ *
+ * The GenericUser class defines common attributes for all users
+ *
+ **/
 class GenericUser {
   constructor(firstName, lastName, email, username, profilePic) {
     this._firstName = firstName;
@@ -61,6 +66,12 @@ class GenericUser {
   }
 }
 
+/**
+ *
+ *  The User class defines standard, unprivleged users
+ *
+ *
+ */
 class User extends GenericUser {
   constructor(firstName, lastName, email, username, profilePic) {
     super(firstName, lastName, email, username, profilePic);
@@ -68,58 +79,78 @@ class User extends GenericUser {
     User.users.push(this); // Add this instance to list of users
   }
 
-  static users = [];
+  static users = []; // To keep a dynamic list of User objects as they are created
+
   /**
    * Method that displays the homepage for each user after a successful login
-   * It adds a bootstrap card carousel item for each appropriate profile
+   * Display a bootstrap nav with tabs for each user type (User and Admin)
    * In the case of a normal user, it displays their profile and all admin
    *
    */
-  displayHomepage = (block, navList, navItemsBlock) => {
+  displayHomepage = (
+    block,
+    userNavList,
+    userNavItems,
+    adminNavList,
+    adminNavItems
+  ) => {
+    // Clear all previous content
     block.innerHTML = ``;
 
-    let navListContent = ``;
-    let navItemsBlockContent = ``;
+    // Store new content
+    let userNavListContent = ``;
+    let userNavItemsContent = ``;
+    let adminNavListContent = ``;
+    let adminNavItemsContent = ``;
     let activeCount = 0;
 
-    navListContent += `
+    // Add the current user first
+    userNavListContent += `
         <li class="nav-item" role="presentation">
           <a class="nav-link active" data-bs-toggle="tab" href="#${this.username}">${this.username}</a>
         </li>
    `;
 
-    for (let admin of Admin.admins) {
-      navListContent += `
-        <li class="nav-item" role="presentation">
-          <a class="nav-link" data-bs-toggle="tab" href="#${admin.username}">${admin.username}</a>
-        </li>
-      `;
-      activeCount += 1;
-    }
-
-    navItemsBlockContent += `
-          <div class="tab-pane container fade show active" id=${this.username} role="tabpanel">
-            <div class="card w-100 m-0">
-              <img class="card-img-top rounded img" src="${this.profilePic}" alt="${this.firstName} ${this.lastName}">
-              <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                <h5 class="card-title">${this.firstName} ${this.lastName}</h5>
-                <ul class="list-group p-2">
-                  <li class="list-group-item">${this.email}</li>
-                  <li class="list-group-item">${this.username}</li>
-                </ul>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
+    userNavItemsContent += `
+      <div class="tab-pane container fade show active" id=${this.username} role="tabpanel">
+        <div class="card w-100 m-0">
+          <img class="card-img-top rounded img" src="${this.profilePic}" alt="${this.firstName} ${this.lastName}">
+          <div class="card-body d-flex flex-column justify-content-center align-items-center">
+            <h5 class="card-title">${this.firstName} ${this.lastName}</h5>
+            <ul class="list-group p-2">
+            <li class="list-group-item">${this.email}</li>
+            <li class="list-group-item">${this.username}</li>
+            </ul>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
           </div>
+        </div>
+      </div>
     `;
 
     activeCount = 0;
 
+    // Add all of the admin to the admin nav
     for (let admin of Admin.admins) {
-      navItemsBlockContent += `
-          <div class="tab-pane container fade" id=${admin.username} role="tabpanel">
-            <div class="card w-100 m-0">
-              <img class="card-img-top" src="${admin.profilePic}" alt="${admin.firstName} ${admin.lastName}">
+      adminNavListContent += `
+       <li class="nav-item" role="presentation">
+         <a class="nav-link ${
+           activeCount === 0 ? "active" : ""
+         }" data-bs-toggle="tab" href="#${admin.username}">${admin.username}</a>
+       </li>
+     `;
+      activeCount += 1;
+    }
+    activeCount = 0;
+
+    for (let admin of Admin.admins) {
+      adminNavItemsContent += `
+     <div class="tab-pane container fade ${
+       activeCount === 0 ? "show active" : ""
+     }" id=${admin.username} role="tabpanel">
+            <div class="card w-100 m-0 d-flex flex-column flex-md-row">
+              <img class="card-img-top img-thumbnail" src="${
+                admin.profilePic
+              }" alt="${admin.firstName} ${admin.lastName}">
               <div class="card-body d-flex flex-column justify-content-center align-items-center">
                 <h5 class="card-title">${admin.firstName} ${admin.lastName}</h5>
                 <ul class="list-group p-2">
@@ -133,14 +164,29 @@ class User extends GenericUser {
       `;
       activeCount += 1;
     }
-    navList.innerHTML = navListContent;
-    navItemsBlock.innerHTML = navItemsBlockContent;
+    userNavList.innerHTML = userNavListContent;
+    userNavItems.innerHTML = userNavItemsContent;
+    userDisplay.appendChild(userNavList);
+    userDisplay.appendChild(userNavItems);
 
-    block.appendChild(navList);
-    block.appendChild(navItemsBlock);
+    adminNavList.innerHTML = adminNavListContent;
+    adminNavItems.innerHTML = adminNavItemsContent;
+    adminDisplay.appendChild(adminNavList);
+    adminDisplay.appendChild(adminNavItems);
+
+    block.appendChild(userDisplay);
+    block.appendChild(adminDisplay);
   };
 }
 
+/**
+ *
+ *  The Admin class is similar to User, but with increased privledges
+ *  Instances of Admin are allowed to view every User
+ *
+ *  Admin
+ *
+ */
 class Admin extends GenericUser {
   constructor(firstName, lastName, email, username, profilePic) {
     super(firstName, lastName, email, username, profilePic);
@@ -151,75 +197,132 @@ class Admin extends GenericUser {
 
   static admins = [];
 
-  displayHomepage = (block) => {
-    let content = ``; // To store inner-carousel content
+  /**
+   * Method that displays the homepage for each user after a successful login
+   * It adds a bootstrap card carousel item for each appropriate profile
+   * In the case of a normal user, it displays their profile and all admin
+   *
+   */
+  displayHomepage = (
+    block,
+    userNavList,
+    userNavItems,
+    adminNavList,
+    adminNavItems
+  ) => {
+    // Clear all previous content
+    block.innerHTML = ``;
 
-    block.innerHTML = ``; // Clear previous
+    // Store new content
+    let userNavListContent = ``;
+    let userNavItemsContent = ``;
+    let adminNavListContent = ``;
+    let adminNavItemsContent = ``;
+    let activeCount = 0;
 
-    document.getElementById("userTitle").innerText = `
-    Welcome ${this.firstName}
-    `;
+    // Add the current user first
+    adminNavListContent += `
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" data-bs-toggle="tab" href="#${this.username}">${this.username}</a>
+        </li>
+   `;
 
-    content += `
-      <div class="carousel-item w-100 active"
-          <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="${this.profilePic}" alt="${this.firstName} ${this.lastName}">
-            <div class="card-body d-flex flex-column justify-content-center align-items-center">
-              <h5 class="card-title">${this.firstName} ${this.lastName}</h5>
-              <ul class="list-group p-2">
-                <li class="list-group-item">${this.email}</li>
-                <li class="list-group-item">${this.username}</li>
-              </ul>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
+    adminNavItemsContent += `
+      <div class="tab-pane container fade show active" id=${this.username} role="tabpanel">
+        <div class="card w-100 m-0 d-flex flex-column flex-md-row">
+          <img class="card-img-top img-thumbnail" src="${this.profilePic}" alt="${this.firstName} ${this.lastName}">
+          <div class="card-body d-flex flex-column justify-content-center align-items-center">
+            <h5 class="card-title">${this.firstName} ${this.lastName}</h5>
+            <ul class="list-group p-2">
+            <li class="list-group-item">${this.email}</li>
+            <li class="list-group-item">${this.username}</li>
+            </ul>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
           </div>
         </div>
+      </div>
     `;
+
+    // Add all of the admin to the admin nav
+    for (let admin of Admin.admins) {
+      if (admin.username === this.username) continue; // So the currentUser isn't added twice
+
+      adminNavListContent += `
+       <li class="nav-item" role="presentation">
+         <a class="nav-link" data-bs-toggle="tab" href="#${admin.username}">${admin.username}</a>
+       </li>
+     `;
+    }
 
     for (let admin of Admin.admins) {
-      // If it's not an admin and it's not the current user
-      // if (!user.admin && this.username != user.username) continue;
-      if (admin === this) continue;
-
-      content += `
-      <div class="carousel-item w-100"
-        <div class="card" style="width: 18rem;">
-          <img class="card-img-top" src="${admin.profilePic}" alt="Gandalf the Grey">
-          <div class="card-body d-flex justify-content-center align-items-center flex-column">
-            <h5 class="card-title">${admin.firstName} ${admin.lastName}</h5>
-            <ul class="list-group p-2">
-              <li class="list-group-item">${admin.email}</li>
-              <li class="list-group-item">${admin.username}</li>
-            </ul>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+      adminNavItemsContent += `
+     <div class="tab-pane container fade" id=${admin.username} role="tabpanel">
+            <div class="card w-100 m-0 d-flex flex-column flex-md-row">
+              <img class="card-img-top img-thumbnail" src="${admin.profilePic}" alt="${admin.firstName} ${admin.lastName}">
+              <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                <h5 class="card-title">${admin.firstName} ${admin.lastName}</h5>
+                <ul class="list-group p-2">
+                  <li class="list-group-item">${admin.email}</li>
+                  <li class="list-group-item">${admin.username}</li>
+                </ul>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
       `;
     }
+
+    activeCount = 0;
+
+    // Add all of the users to the user nav
+    for (let user of User.users) {
+      userNavListContent += `
+       <li class="nav-item" role="presentation">
+         <a class="nav-link ${
+           activeCount === 0 ? "active" : ""
+         }" data-bs-toggle="tab" href="#${user.username}">${user.username}</a>
+       </li>
+     `;
+      activeCount += 1;
+    }
+
+    activeCount = 0;
 
     for (let user of User.users) {
-      // If it's not an admin and it's not the current user
-      // if (!user.admin && this.username != user.username) continue;
-
-      content += `
-      <div class="carousel-item w-100"
-        <div class="card" style="width: 18rem;">
-          <img class="card-img-top" src="..." alt="${user.profilePic}">
-          <div class="card-body d-flex justify-content-center align-items-center flex-column">
-            <h5 class="card-title">${user.firstName} ${user.lastName}</h5>
-            <ul class="list-group p-2">
-              <li class="list-group-item">${user.email}</li>
-              <li class="list-group-item">${user.username}</li>
-            </ul>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+      userNavItemsContent += `
+     <div class="tab-pane container fade ${
+       activeCount === 0 ? "show active" : ""
+     }" id=${user.username} role="tabpanel">
+            <div class="card w-100 m-0 d-flex flex-column flex-md-row">
+              <img class="card-img-top img-thumbnail" src="${
+                user.profilePic
+              }" alt="${user.firstName} ${user.lastName}">
+              <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                <h5 class="card-title">${user.firstName} ${user.lastName}</h5>
+                <ul class="list-group p-2">
+                  <li class="list-group-item">${user.email}</li>
+                  <li class="list-group-item">${user.username}</li>
+                </ul>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
       `;
-    }
 
-    block.innerHTML = content;
+      activeCount += 1;
+    }
+    userNavList.innerHTML = userNavListContent;
+    userNavItems.innerHTML = userNavItemsContent;
+    userDisplay.appendChild(userNavList);
+    userDisplay.appendChild(userNavItems);
+
+    adminNavList.innerHTML = adminNavListContent;
+    adminNavItems.innerHTML = adminNavItemsContent;
+    adminDisplay.appendChild(adminNavList);
+    adminDisplay.appendChild(adminNavItems);
+
+    block.appendChild(adminDisplay);
+    block.appendChild(userDisplay);
   };
 }
 
@@ -344,20 +447,17 @@ let gollum = new User(
   "images/gollum.webp"
 );
 
-console.log(User.users);
-console.log(Admin.admins);
-
-const userDisplay = document.getElementById("userDisplay");
 const loginBtn = document.getElementById("loginBtn");
 const loginForm = document.getElementById("loginForm");
 const loginFormContainer = document.getElementById("loginFormContainer");
-const loginBlock = document.getElementById("loginBlock");
-const homeBlock = document.getElementById("homeBlock");
-const userCarousel = document.getElementById("userCarousel");
-const userCarouselInner = document.getElementById("userCarouselInner");
+const userDisplayContainer = document.getElementById("userDisplayContainer");
 
-const navList = document.getElementById("navList");
-const navItemsBlock = document.getElementById("navItemsBlock");
+const adminNavList = document.getElementById("adminNavList");
+const adminNavItems = document.getElementById("adminNavItems");
+const userNavList = document.getElementById("userNavList");
+const userNavItems = document.getElementById("userNavItems");
+const userDisplay = document.getElementById("userDisplay");
+const adminDisplay = document.getElementById("adminDisplay");
 
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -383,11 +483,15 @@ loginForm.addEventListener("submit", (e) => {
   let currentUser = allUsers[userIndex];
 
   if (usernames.includes(usernameInputValue)) {
-    // currentUser.moveCurrentUserToFrontOfArray(User.users, userIndex);
-    // currentUser.displayHomepage(userCarouselInner);
-    currentUser.displayHomepage(userDisplay, navList, navItemsBlock);
+    currentUser.displayHomepage(
+      userDisplayContainer,
+      userNavList,
+      userNavItems,
+      adminNavList,
+      adminNavItems
+    );
 
-    userDisplay.classList.remove("hidden");
+    userDisplayContainer.classList.remove("hidden");
     loginFormContainer.classList.add("hidden");
   }
 });
