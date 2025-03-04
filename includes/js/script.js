@@ -86,31 +86,37 @@ class User extends GenericUser {
    * Display a bootstrap nav with tabs for each user type (User and Admin)
    * In the case of a normal user, it displays their profile and all admin
    *
+   *
    */
   displayHomepage = (
-    block,
-    userNavList,
-    userNavItems,
-    adminNavList,
-    adminNavItems
+    block, // Outer container
+    userNavList, // To store nav tab list items for users
+    userNavItems, // To store nav tab content for users
+    adminNavList, // To store nav tab list items for admins
+    adminNavItems // To store nav tab content for admins
   ) => {
     // Clear all previous content
     block.innerHTML = ``;
 
-    // Store new content
+    // Variables to store generated HTML - makes it easier add it to the DOM all at once rather then bit by bit
     let userNavListContent = ``;
     let userNavItemsContent = ``;
     let adminNavListContent = ``;
     let adminNavItemsContent = ``;
+
+    // Counter to keep track of first iteration of loops to add "active" class
     let activeCount = 0;
 
-    // Add the current user first
+    // Add the current user first so their profile is displayed
+
+    // Add a list item to nav
     userNavListContent += `
-        <li class="nav-item" role="presentation">
-          <a class="nav-link active" data-bs-toggle="tab" href="#${this.username}">${this.username}</a>
+        <li class="nav-item p-0" role="presentation">
+          <a class="nav-link p-1 active" data-bs-toggle="tab" href="#${this.username}">${this.username}</a>
         </li>
    `;
 
+    // Add associated content for that nav tab
     userNavItemsContent += `
       <div class="tab-pane container fade show active" id=${this.username} role="tabpanel">
         <div class="card w-100 m-0">
@@ -127,24 +133,26 @@ class User extends GenericUser {
       </div>
     `;
 
-    activeCount = 0;
-
-    // Add all of the admin to the admin nav
+    // Add all of the admin to the admin nav list
     for (let admin of Admin.admins) {
       adminNavListContent += `
-       <li class="nav-item" role="presentation">
-         <a class="nav-link ${
+       <li class="nav-item p-0" role="presentation">
+         <a class="nav-link p-1 ${
+           // If it's the first iteration, add class "active"
            activeCount === 0 ? "active" : ""
          }" data-bs-toggle="tab" href="#${admin.username}">${admin.username}</a>
        </li>
      `;
       activeCount += 1;
     }
-    activeCount = 0;
 
+    activeCount = 0; // Reset counter
+
+    // Add associated content for admin list
     for (let admin of Admin.admins) {
       adminNavItemsContent += `
      <div class="tab-pane container fade ${
+       // If first item, add class "show active"
        activeCount === 0 ? "show active" : ""
      }" id=${admin.username} role="tabpanel">
             <div class="card w-100 m-0 d-flex flex-column flex-md-row">
@@ -164,16 +172,20 @@ class User extends GenericUser {
       `;
       activeCount += 1;
     }
+
+    // Add user content to DOM
     userNavList.innerHTML = userNavListContent;
     userNavItems.innerHTML = userNavItemsContent;
     userDisplay.appendChild(userNavList);
     userDisplay.appendChild(userNavItems);
 
+    // Add admin content to DOM
     adminNavList.innerHTML = adminNavListContent;
     adminNavItems.innerHTML = adminNavItemsContent;
     adminDisplay.appendChild(adminNavList);
     adminDisplay.appendChild(adminNavItems);
 
+    // Append children to outer container
     block.appendChild(userDisplay);
     block.appendChild(adminDisplay);
   };
@@ -182,9 +194,11 @@ class User extends GenericUser {
 /**
  *
  *  The Admin class is similar to User, but with increased privledges
- *  Instances of Admin are allowed to view every User
  *
- *  Admin
+ *  Privledges:
+ *    - View every user profile
+ *    - Make changes to normal users - including deleting profiles
+ *
  *
  */
 class Admin extends GenericUser {
@@ -192,15 +206,16 @@ class Admin extends GenericUser {
     super(firstName, lastName, email, username, profilePic);
 
     this._admin = true;
-    Admin.admins.push(this);
+    Admin.admins.push(this); // Add current instance to list
   }
 
-  static admins = [];
+  static admins = []; // Dynamically keeps an array of Admin instances
 
   /**
-   * Method that displays the homepage for each user after a successful login
-   * It adds a bootstrap card carousel item for each appropriate profile
-   * In the case of a normal user, it displays their profile and all admin
+   *
+   * For instance of Admin, the displayHomepage() method displays all User profiles in addition to all Admin profiles
+   * This is distinct from the displayHomepage() method in the User class, which displays just the current
+   * user's profile along with all Admin profiles
    *
    */
   displayHomepage = (
@@ -461,27 +476,28 @@ const adminDisplay = document.getElementById("adminDisplay");
 
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  // I want to run a validation to check if the user.username is in my list of users
-  // then bring up the homepage
+
+  // Get username value entered by user
   const usernameInputValue = document.getElementById("usernameInput").value;
 
-  let usernames = [];
+  // Get an array of all User and Admin instances
   let allUsers = User.users.concat(Admin.admins);
-  console.log(allUsers);
 
-  // Really basic validation
-  // TODO: Improve to have some more strict matching conditions (or less strict - case sensitivity)
+  // Create an array for all usernames
+  let usernames = [];
   allUsers.forEach((user) => {
     usernames.push(user.username);
   });
 
-  console.log(usernames);
-
+  // Get the index of the current user that's trying to login
   let userIndex = allUsers.findIndex(
     (user) => usernameInputValue === user.username
   );
+
+  // Get the current instance of User or Admin that's trying to login
   let currentUser = allUsers[userIndex];
 
+  // If it's a registered user
   if (usernames.includes(usernameInputValue)) {
     currentUser.displayHomepage(
       userDisplayContainer,
@@ -491,7 +507,7 @@ loginForm.addEventListener("submit", (e) => {
       adminNavItems
     );
 
-    userDisplayContainer.classList.remove("hidden");
-    loginFormContainer.classList.add("hidden");
+    userDisplayContainer.classList.remove("hidden"); // Show homepage content
+    loginFormContainer.classList.add("hidden"); // Hide login page content
   }
 });
