@@ -15,6 +15,39 @@ class GenericUser {
     this._admin = false;
   }
 
+  generateNavListItem = (obj, counter) => {
+    return `
+          <li class="nav-item p-0" role="presentation">
+            <a class="nav-link p-1 ${
+              counter === 0 ? "active" : ""
+            }" data-bs-toggle="tab" href="#${obj.username}">${obj.username}</a>
+          </li>
+     `;
+  };
+
+  generateNavItem = (obj, counter) => {
+    return `
+      <div class="container p-0 m-0">
+      <div class="tab-pane overflow-hidden ${
+        counter === 0 ? "show active" : ""
+      }" id=${obj.username} role="tabpanel">
+        <div class="card w-100 m-0 d-flex flex-column flex-md-row overflow-hidden">
+          <img class="profile-img justify-self-center align-self-center m-2" src="${
+            obj.profilePic
+          }" alt="${obj.firstName} ${obj.lastName}">
+          <div class="card-body d-flex flex-column justify-content-center align-items-center p-1 m-1">
+            <h5 class="card-title">${obj.firstName} ${obj.lastName}</h5>
+            <ul class="list-group p-2">
+            <li class="list-group-item">${obj.email}</li>
+            <li class="list-group-item">${obj.username}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      </div>
+    `;
+  };
+
   // Getters
   get firstName() {
     return this._firstName;
@@ -70,7 +103,6 @@ class GenericUser {
  *
  *  The User class defines standard, unprivleged users
  *
- *
  */
 class User extends GenericUser {
   constructor(firstName, lastName, email, username, profilePic) {
@@ -86,14 +118,13 @@ class User extends GenericUser {
    * Display a bootstrap nav with tabs for each user type (User and Admin)
    * In the case of a normal user, it displays their profile and all admin
    *
-   *
    */
   displayHomepage = (
     block, // Outer container
-    userNavList, // To store nav tab list items for users
-    userNavItems, // To store nav tab content for users
-    adminNavList, // To store nav tab list items for admins
-    adminNavItems // To store nav tab content for admins
+    userNavList, // Stores nav tab list items for users
+    userNavItems, // Stores nav tab content for users
+    adminNavList, // Stores nav tab list items for admins
+    adminNavItems // Stores nav tab content for admins
   ) => {
     // Clear all previous content
     block.innerHTML = ``;
@@ -109,40 +140,16 @@ class User extends GenericUser {
 
     // Add the current user first so their profile is displayed
 
-    // Add a list item to nav
-    userNavListContent += `
-        <li class="nav-item p-0" role="presentation">
-          <a class="nav-link p-1 active" data-bs-toggle="tab" href="#${this.username}">${this.username}</a>
-        </li>
-   `;
+    // Add current user list item
+    userNavListContent += this.generateNavListItem(this, activeCount);
 
     // Add associated content for that nav tab
-    userNavItemsContent += `
-      <div class="tab-pane container fade show active" id=${this.username} role="tabpanel">
-        <div class="card w-100 m-0">
-          <img class="card-img-top rounded img" src="${this.profilePic}" alt="${this.firstName} ${this.lastName}">
-          <div class="card-body d-flex flex-column justify-content-center align-items-center">
-            <h5 class="card-title">${this.firstName} ${this.lastName}</h5>
-            <ul class="list-group p-2">
-            <li class="list-group-item">${this.email}</li>
-            <li class="list-group-item">${this.username}</li>
-            </ul>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-    `;
+    userNavItemsContent += this.generateNavItem(this, activeCount);
 
     // Add all of the admin to the admin nav list
     for (let admin of Admin.admins) {
-      adminNavListContent += `
-       <li class="nav-item p-0" role="presentation">
-         <a class="nav-link p-1 ${
-           // If it's the first iteration, add class "active"
-           activeCount === 0 ? "active" : ""
-         }" data-bs-toggle="tab" href="#${admin.username}">${admin.username}</a>
-       </li>
-     `;
+      adminNavListContent += this.generateNavListItem(admin, activeCount);
+
       activeCount += 1;
     }
 
@@ -150,26 +157,8 @@ class User extends GenericUser {
 
     // Add associated content for admin list
     for (let admin of Admin.admins) {
-      adminNavItemsContent += `
-     <div class="tab-pane container fade ${
-       // If first item, add class "show active"
-       activeCount === 0 ? "show active" : ""
-     }" id=${admin.username} role="tabpanel">
-            <div class="card w-100 m-0 d-flex flex-column flex-md-row">
-              <img class="card-img-top img-thumbnail" src="${
-                admin.profilePic
-              }" alt="${admin.firstName} ${admin.lastName}">
-              <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                <h5 class="card-title">${admin.firstName} ${admin.lastName}</h5>
-                <ul class="list-group p-2">
-                  <li class="list-group-item">${admin.email}</li>
-                  <li class="list-group-item">${admin.username}</li>
-                </ul>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-      `;
+      adminNavItemsContent += this.generateNavItem(admin, activeCount);
+
       activeCount += 1;
     }
 
@@ -188,18 +177,17 @@ class User extends GenericUser {
     // Append children to outer container
     block.appendChild(userDisplay);
     block.appendChild(adminDisplay);
+
+    homepageTitle.innerText = `Welcome, ${this.firstName} ${this.lastName}`;
   };
 }
 
 /**
- *
  *  The Admin class is similar to User, but with increased privledges
  *
  *  Privledges:
  *    - View every user profile
  *    - Make changes to normal users - including deleting profiles
- *
- *
  */
 class Admin extends GenericUser {
   constructor(firstName, lastName, email, username, profilePic) {
@@ -223,10 +211,11 @@ class Admin extends GenericUser {
     userNavList,
     userNavItems,
     adminNavList,
-    adminNavItems
+    adminNavItems,
+    homepageTitle
   ) => {
     // Clear all previous content
-    block.innerHTML = ``;
+    // block.innerHTML = ``;
 
     // Store new content
     let userNavListContent = ``;
@@ -235,97 +224,40 @@ class Admin extends GenericUser {
     let adminNavItemsContent = ``;
     let activeCount = 0;
 
-    // Add the current user first
-    adminNavListContent += `
-        <li class="nav-item" role="presentation">
-          <a class="nav-link active" data-bs-toggle="tab" href="#${this.username}">${this.username}</a>
-        </li>
-   `;
+    // Add the current user (Admin) first
+    adminNavListContent += this.generateNavListItem(this, activeCount);
+    adminNavItemsContent += this.generateNavItem(this, activeCount);
+    activeCount += 1;
 
-    adminNavItemsContent += `
-      <div class="tab-pane container fade show active" id=${this.username} role="tabpanel">
-        <div class="card w-100 m-0 d-flex flex-column flex-md-row">
-          <img class="card-img-top img-thumbnail" src="${this.profilePic}" alt="${this.firstName} ${this.lastName}">
-          <div class="card-body d-flex flex-column justify-content-center align-items-center">
-            <h5 class="card-title">${this.firstName} ${this.lastName}</h5>
-            <ul class="list-group p-2">
-            <li class="list-group-item">${this.email}</li>
-            <li class="list-group-item">${this.username}</li>
-            </ul>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-    `;
-
-    // Add all of the admin to the admin nav
+    // Add all of the admin to the admin nav list
     for (let admin of Admin.admins) {
-      if (admin.username === this.username) continue; // So the currentUser isn't added twice
+      if (admin.username === this.username) continue; // So the current user isn't added twice
 
-      adminNavListContent += `
-       <li class="nav-item" role="presentation">
-         <a class="nav-link" data-bs-toggle="tab" href="#${admin.username}">${admin.username}</a>
-       </li>
-     `;
+      adminNavListContent += this.generateNavListItem(admin, 1);
     }
 
+    // Add all of the associated content for each admin
     for (let admin of Admin.admins) {
-      adminNavItemsContent += `
-     <div class="tab-pane container fade" id=${admin.username} role="tabpanel">
-            <div class="card w-100 m-0 d-flex flex-column flex-md-row">
-              <img class="card-img-top img-thumbnail" src="${admin.profilePic}" alt="${admin.firstName} ${admin.lastName}">
-              <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                <h5 class="card-title">${admin.firstName} ${admin.lastName}</h5>
-                <ul class="list-group p-2">
-                  <li class="list-group-item">${admin.email}</li>
-                  <li class="list-group-item">${admin.username}</li>
-                </ul>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-      `;
-    }
+      if (admin.username === this.username) continue;
 
-    activeCount = 0;
+      adminNavItemsContent += this.generateNavItem(admin, activeCount);
+    }
 
     // Add all of the users to the user nav
     for (let user of User.users) {
-      userNavListContent += `
-       <li class="nav-item" role="presentation">
-         <a class="nav-link ${
-           activeCount === 0 ? "active" : ""
-         }" data-bs-toggle="tab" href="#${user.username}">${user.username}</a>
-       </li>
-     `;
+      userNavListContent += this.generateNavListItem(user, activeCount);
+
       activeCount += 1;
     }
 
     activeCount = 0;
 
     for (let user of User.users) {
-      userNavItemsContent += `
-     <div class="tab-pane container fade ${
-       activeCount === 0 ? "show active" : ""
-     }" id=${user.username} role="tabpanel">
-            <div class="card w-100 m-0 d-flex flex-column flex-md-row">
-              <img class="card-img-top img-thumbnail" src="${
-                user.profilePic
-              }" alt="${user.firstName} ${user.lastName}">
-              <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                <h5 class="card-title">${user.firstName} ${user.lastName}</h5>
-                <ul class="list-group p-2">
-                  <li class="list-group-item">${user.email}</li>
-                  <li class="list-group-item">${user.username}</li>
-                </ul>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-      `;
+      userNavItemsContent += this.generateNavItem(user, activeCount);
 
       activeCount += 1;
     }
+
     userNavList.innerHTML = userNavListContent;
     userNavItems.innerHTML = userNavItemsContent;
     userDisplay.appendChild(userNavList);
@@ -336,12 +268,11 @@ class Admin extends GenericUser {
     adminDisplay.appendChild(adminNavList);
     adminDisplay.appendChild(adminNavItems);
 
-    block.appendChild(adminDisplay);
-    block.appendChild(userDisplay);
+    homepageTitle.innerText = `Welcome, ${this.firstName} ${this.lastName}`;
   };
 }
 
-// Users
+// Create Admin instances
 let bilbo = new Admin(
   "Bilbo",
   "Baggins",
@@ -361,11 +292,12 @@ let gandalf = new Admin(
 let tomBombadil = new Admin(
   "Tom",
   "Bombadil",
-  "tommysmokes@shire.orc",
+  "tommy@shire.orc",
   "tombom",
   "images/tombom.webp"
 );
 
+// Create User instances
 let frodo = new User(
   "Frodo",
   "Baggins",
@@ -473,6 +405,7 @@ const userNavList = document.getElementById("userNavList");
 const userNavItems = document.getElementById("userNavItems");
 const userDisplay = document.getElementById("userDisplay");
 const adminDisplay = document.getElementById("adminDisplay");
+const homepageTitle = document.getElementById("homepageTitle");
 
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -504,7 +437,8 @@ loginForm.addEventListener("submit", (e) => {
       userNavList,
       userNavItems,
       adminNavList,
-      adminNavItems
+      adminNavItems,
+      homepageTitle
     );
 
     userDisplayContainer.classList.remove("hidden"); // Show homepage content
