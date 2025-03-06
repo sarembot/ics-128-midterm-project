@@ -15,9 +15,14 @@ class GenericUser {
     this._admin = false;
   }
 
+  /**
+   * Method for generating tab nav list items by interpolating information
+   * from GenericUser objects
+   *
+   */
   generateNavListItem = (obj, counter) => {
     return `
-          <li class="nav-item p-0" role="presentation">
+          <li id="${obj.username}Li" class="nav-item p-0" role="presentation">
             <a class="nav-link p-1 ${
               counter === 0 ? "active" : ""
             }" data-bs-toggle="tab" href="#${obj.username}">${obj.username}</a>
@@ -25,13 +30,17 @@ class GenericUser {
      `;
   };
 
+  /**
+   * Method for generating tab nav content by interpolating information from
+   * GenericUser objects
+   *
+   */
   generateNavItem = (obj, counter) => {
     return `
-      <div class="container p-0 m-0">
-      <div class="tab-pane overflow-hidden ${
-        counter === 0 ? "show active" : ""
-      }" id=${obj.username} role="tabpanel">
-        <div class="card w-100 m-0 d-flex flex-column flex-md-row overflow-hidden">
+      <div class="tab-pane fade ${counter === 0 ? "show active" : ""}" id=${
+      obj.username
+    } role="tabpanel">
+        <div class="card w-100 m-0 d-flex flex-column flex-md-row">
           <img class="profile-img justify-self-center align-self-center m-2" src="${
             obj.profilePic
           }" alt="${obj.firstName} ${obj.lastName}">
@@ -43,7 +52,6 @@ class GenericUser {
             </ul>
           </div>
         </div>
-      </div>
       </div>
     `;
   };
@@ -198,6 +206,7 @@ class Admin extends GenericUser {
   }
 
   static admins = []; // Dynamically keeps an array of Admin instances
+  deleteBtns = [];
 
   /**
    *
@@ -233,7 +242,7 @@ class Admin extends GenericUser {
     for (let admin of Admin.admins) {
       if (admin.username === this.username) continue; // So the current user isn't added twice
 
-      adminNavListContent += this.generateNavListItem(admin, 1);
+      adminNavListContent += this.generateNavListItem(admin, activeCount);
     }
 
     // Add all of the associated content for each admin
@@ -242,6 +251,8 @@ class Admin extends GenericUser {
 
       adminNavItemsContent += this.generateNavItem(admin, activeCount);
     }
+
+    activeCount = 0;
 
     // Add all of the users to the user nav
     for (let user of User.users) {
@@ -269,6 +280,52 @@ class Admin extends GenericUser {
     adminDisplay.appendChild(adminNavItems);
 
     homepageTitle.innerText = `Welcome, ${this.firstName} ${this.lastName}`;
+
+    this.addDeleteBtnsForUsers();
+    this.addListenerToDeleteBtns();
+  };
+
+  /**
+   * Adds delete buttons for each user, giving Admins the ability to
+   * delete user profiles
+   *
+   */
+  addDeleteBtnsForUsers = () => {
+    // For every user
+    for (let user of User.users) {
+      // Get their tab pane container
+      const div = document.getElementById(user.username);
+      // Get their associated tab list item
+      const li = document.getElementById(`${user.username}Li`);
+
+      const btn = document.createElement("button");
+      btn.classList = "btn btn-danger mx-5";
+      btn.textContent = `Delete ${user.username}`;
+
+      // Append a child inside their card
+      div.firstElementChild.appendChild(btn);
+
+      // Add their button and list item to an array so we can
+      // add the event listeners later
+      this.deleteBtns.push({ button: btn, li: li });
+    }
+  };
+
+  /**
+   *  Adds an event listener to each delete button of user profiles
+   *  that removes the buttons parent element (the profile card)
+   *  and removes the list item associated with that card
+   *
+   */
+  addListenerToDeleteBtns = () => {
+    this.deleteBtns.forEach((obj) => {
+      obj.button.addEventListener("click", () => {
+        obj.button.parentElement.remove(); // Remove the card (the button's parent)
+        obj.li.remove(); // Remove the associated list item
+
+        // TODO: Think about deleting the user from the actual array
+      });
+    });
   };
 }
 
@@ -354,6 +411,14 @@ let aragorn = new User(
   "images/aragorn.webp"
 );
 
+let gollum = new User(
+  "Gollum",
+  "",
+  "gollum@midearth.orc",
+  "gollum",
+  "images/gollum.webp"
+);
+
 let lobelia = new User(
   "Lobelia",
   "Sackville-Baggins",
@@ -384,14 +449,6 @@ let saruman = new User(
   "saruman@midearth.orc",
   "saruman",
   "images/saruman.webp"
-);
-
-let gollum = new User(
-  "Gollum",
-  "",
-  "gollum@midearth.orc",
-  "gollum",
-  "images/gollum.webp"
 );
 
 const loginBtn = document.getElementById("loginBtn");

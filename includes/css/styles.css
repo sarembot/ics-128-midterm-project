@@ -1,5 +1,5 @@
 * {
-  border: 0.1px dotted green;
+  /* border: 0.1px dotted green; */
   font-family: "Uncial Antiqua", system-ui;
 }
 
@@ -36,14 +36,14 @@ body {
 .profile-img {
   max-width: 100%;
   min-width: 150px;
-  height: 150px;
+  max-height: 250px;
   object-fit: cover;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   border: 3px solid #a19b81;
 }
 
-.card {
+/* .card {
   width: 90%;
   margin: 10px auto;
-}
+} */
