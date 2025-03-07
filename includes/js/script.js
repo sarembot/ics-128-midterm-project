@@ -37,21 +37,51 @@ class GenericUser {
    */
   generateNavItem = (obj, counter) => {
     return `
-      <div class="tab-pane fade ${counter === 0 ? "show active" : ""}" id=${
+      <div class="tab-pane fade ${counter === 0 ? "show active" : ""}" id="${
       obj.username
-    } role="tabpanel">
+    }" role="tabpanel">
         <div class="card w-100 m-0 d-flex flex-column flex-md-row">
           <img class="profile-img justify-self-center align-self-center m-2" src="${
             obj.profilePic
           }" alt="${obj.firstName} ${obj.lastName}">
-          <div class="card-body d-flex flex-column justify-content-center align-items-center p-1 m-1">
+          <div id="${
+            obj.username
+          }CardBody" class="card-body d-flex flex-column justify-content-center align-items-center p-1 m-1">
             <h5 class="card-title">${obj.firstName} ${obj.lastName}</h5>
-            <ul class="list-group p-2">
+            <ul id="${obj.username}CardList" class="list-group p-2">
             <li class="list-group-item">${obj.email}</li>
             <li class="list-group-item">${obj.username}</li>
             </ul>
           </div>
         </div>
+
+        <div class="modal fade" id="${
+          obj.username
+        }DeleteModal" tabindex="-1" aria-labelledby="${
+      obj.username
+    }DeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 id="${
+                obj.username
+              }DeleteModalLabel" class="modal-title">Delete User</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Are you sure you want to delete ${obj.username}?</p>
+            </div>
+            <div class="modal-footer">
+              <button id="${
+                obj.username
+              }ModalDeleteBtn" type="button" class="btn btn-danger" data-bs-dismiss="modal">Yes, delete.</button>
+              <button id="${
+                obj.username
+              }ModalCancelBtn" type="button" class="btn btn-primary" data-bs-dismiss="modal">No, take me back.</button>
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
     `;
   };
@@ -295,19 +325,36 @@ class Admin extends GenericUser {
     for (let user of User.users) {
       // Get their tab pane container
       const div = document.getElementById(user.username);
+      const cardList = document.getElementById(`${user.username}CardList`);
       // Get their associated tab list item
       const li = document.getElementById(`${user.username}Li`);
+      const modal = document.getElementById(`${user.username}DeleteModal`);
+      const modalDeleteBtn = document.getElementById(
+        `${user.username}ModalDeleteBtn`
+      );
+      const modalCancelBtn = document.getElementById(
+        `${user.username}ModalCancelBtn`
+      );
 
       const btn = document.createElement("button");
-      btn.classList = "btn btn-danger mx-5";
+      btn.classList = "btn btn-danger mx-5 mt-2 ";
+      btn.setAttribute("data-bs-toggle", "modal");
+      btn.setAttribute("data-bs-target", `#${user.username}DeleteModal`);
       btn.textContent = `Delete ${user.username}`;
 
       // Append a child inside their card
-      div.firstElementChild.appendChild(btn);
+      cardList.appendChild(btn);
 
       // Add their button and list item to an array so we can
       // add the event listeners later
-      this.deleteBtns.push({ button: btn, li: li });
+      this.deleteBtns.push({
+        div: div,
+        button: btn,
+        li: li,
+        modal: modal,
+        modalDeleteBtn: modalDeleteBtn,
+        modalCancelBtn: modalCancelBtn,
+      });
     }
   };
 
@@ -319,11 +366,27 @@ class Admin extends GenericUser {
    */
   addListenerToDeleteBtns = () => {
     this.deleteBtns.forEach((obj) => {
-      obj.button.addEventListener("click", () => {
-        obj.button.parentElement.remove(); // Remove the card (the button's parent)
-        obj.li.remove(); // Remove the associated list item
+      let { div, button, li, modal, modalDeleteBtn, modalCancelBtn } = obj;
+      modal = new bootstrap.Modal(modal);
+      button.addEventListener("click", () => {
+        // Pop up modal - Are you sure you want to delete?
+        // If yes,
+        modal.show();
 
-        // TODO: Think about deleting the user from the actual array
+        modalDeleteBtn.addEventListener("click", () => {
+          div.remove();
+          li.remove();
+        });
+
+        modalCancelBtn.addEventListener("click", () => {
+          modal.hide();
+        });
+        // div.remove(); // Remove the card (the button's parent)
+        // li.remove(); // Remove the associated list item
+
+        // If no, close modal
+
+        // TODO: Think about deleting the user from the actual arrw
       });
     });
   };
@@ -464,6 +527,13 @@ const userDisplay = document.getElementById("userDisplay");
 const adminDisplay = document.getElementById("adminDisplay");
 const homepageTitle = document.getElementById("homepageTitle");
 
+const logout = () => {
+  loginFormContainer.classList.remove("hidden");
+  userDisplayContainer.classList.add("hidden");
+};
+
+const logoutBtn = document.getElementById("logoutBtn");
+
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -501,4 +571,8 @@ loginForm.addEventListener("submit", (e) => {
     userDisplayContainer.classList.remove("hidden"); // Show homepage content
     loginFormContainer.classList.add("hidden"); // Hide login page content
   }
+});
+
+logoutBtn.addEventListener("click", () => {
+  logout();
 });
