@@ -1,5 +1,5 @@
 * {
-  /* border: 0.1px dotted green; */
+  border: 0.1px dotted green;
   font-family: "Uncial Antiqua", system-ui;
 }
 
@@ -46,4 +46,36 @@ body {
 /* .card {
   width: 90%;
   margin: 10px auto;
+} */
+#logoutBtn {
+  font-size: 0.55em;
+}
+
+#homepageTitle {
+  font-size: 0.9em;
+}
+
+#adminNavBurger,
+#userNavBurger {
+  position: relative;
+  left: 30px;
+  top: 5px;
+  z-index: 1;
+  width: 25px;
+  height: 25px;
+  aspect-ratio: 1/1;
+}
+/* 
+@media (max-width: 767px) {
+  #adminNavListCollapse {
+    @media (max-width: 767px) {
+      #adminNavListCollapse {
+        position: absolute;
+        width: 100%;
+        z-index: 1000;
+        background: #212529; 
+        border-radius: 5px;
+      }
+    }
+  }
 } */

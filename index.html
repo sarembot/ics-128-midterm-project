@@ -36,7 +36,7 @@
   <body class="d-flex justify-content-center align-items-center">
     <div
       id="mainBlock"
-      class="container d-flex justify-content-center align-items-center p-0"
+      class="container w-100 min-vh-100 d-flex justify-content-center align-items-center p-0"
     >
       <div class="form-group p-2 border-gold" id="loginFormContainer">
         <form action="home.html" method="get" id="loginForm">
@@ -64,34 +64,71 @@
 
       <!-- Homepage -->
       <div class="container p-3 hidden" id="userDisplayContainer">
-        <nav class="navbar navbar-dark bg-dark">
-          <div class="container-fluid d-flex flex-row">
-            <span id="homepageTitle" class="navbar-brand mb-0 h1"></span>
-            <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+        <!-- Upper Navbar -->
+        <nav class="navbar navbar-dark bg-dark d-flex">
+          <div
+            class="container-fluid d-flex flex-row justify-content-center p-0"
+          >
+            <!-- Homepage Title -->
+            <span id="homepageTitle" class="navbar-brand mb-0 h3"></span>
+            <!-- Logout Button -->
+            <button id="logoutBtn" class="btn btn-secondary p-1">Logout</button>
           </div>
         </nav>
         <div class="container text-light" id="adminTitle">Admins</div>
+        <!-- Admin Display -->
         <div
-          class="container d-flex flex-row flex-md-column p-3 border-rounded bg-dark w-100"
+          class="container d-flex flex-row flex-md-column px-2 py-2 border-rounded bg-dark w-100 mw-100 position-relative"
           id="adminDisplay"
         >
-          <ul
-            id="adminNavList"
-            class="nav nav-tabs d-flex flex-column flex-md-row bg-dark"
-            role="tablist"
-          ></ul>
+          <!-- Nav Tab Hamburger -->
+          <button
+            class="navbar-toggler btn btn-dark btn-sm mb-2 d-block d-md-none d-flex text-light"
+            type="button"
+            id="adminNavBurger"
+            data-bs-toggle="collapse"
+            aria-expanded="false"
+            aria-controls="adminNavListCollapse"
+            data-bs-target="#adminNavListCollapse"
+          >
+            <span class="border border-secondary text-secondary rounded p-1"
+              >☰</span
+            >
+          </button>
+          <div id="adminNavListCollapse" class="collapse d-md-block">
+            <ul
+              id="adminNavList"
+              class="nav nav-tabs d-flex flex-column flex-md-row bg-dark"
+              role="tablist"
+            ></ul>
+          </div>
 
           <div id="adminNavItems" class="tab-content w-100 m-0"></div>
         </div>
         <div class="container text-light" id="userTitle">Users</div>
         <div
-          class="container d-flex flex-row flex-md-column p-3 bg-dark"
+          class="container d-flex flex-row flex-md-column p2-5 py-3 bg-dark w-100 mw-80"
           id="userDisplay"
         >
-          <ul
-            id="userNavList"
-            class="nav nav-tabs d-flex flex-column flex-md-row"
-          ></ul>
+          <button
+            class="navbar-toggler btn btn-secondary btn-sm mb-2 d-block d-md-none"
+            id="userNavBurger"
+            type="button"
+            data-bs-toggle="collapse"
+            aria-expanded="false"
+            aria-controls="userNavListCollapse"
+            data-bs-target="#userNavListCollapse"
+          >
+            <span class="border border-secondary text-secondary rounded p-1"
+              >☰</span
+            >
+          </button>
+          <div id="userNavListCollapse" class="collapse d-md-block">
+            <ul
+              id="userNavList"
+              class="nav nav-tabs d-flex flex-column flex-md-row"
+            ></ul>
+          </div>
 
           <div id="userNavItems" class="tab-content w-100 m-0"></div>
         </div>

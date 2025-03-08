@@ -1,10 +1,9 @@
 // MITCHELL SAREMBA - ICS128 - Midterm
 
 /**
- *
- * The GenericUser class defines common attributes for all users
- *
- **/
+ * GenericUser defines attributes and behaviours that are common among both
+ * instances of the User class and instances of the Admin class
+ */
 class GenericUser {
   constructor(firstName, lastName, email, username, profilePic) {
     this._firstName = firstName;
@@ -16,9 +15,12 @@ class GenericUser {
   }
 
   /**
-   * Method for generating tab nav list items by interpolating information
-   * from GenericUser objects
+   * Generates a list item in Bootstrap nav tab format
    *
+   * @param {l} obj specifies the object who's information is interpolated
+   * @param {*} counter is used to keep track of the first item on the list to
+   * include the "active" bootstrap class
+   * @returns an <li> tag containing proper bootstrap format for nav tab list items
    */
   generateNavListItem = (obj, counter) => {
     return `
@@ -31,26 +33,30 @@ class GenericUser {
   };
 
   /**
-   * Method for generating tab nav content by interpolating information from
-   * GenericUser objects
+   * Generates bootstrap nav tab content for their associated list item
    *
+   * @param {object} obj specifies the object who's information is interpolated
+   * @param {integer} counter is used to keep track of the first item on the list to
+   * include the "show active" bootstrap class
+   * @returns a <div> element of class tab-pane, containing a bootstrap card with
+   * obj (user) that displays user information
    */
   generateNavItem = (obj, counter) => {
     return `
-      <div class="tab-pane fade ${counter === 0 ? "show active" : ""}" id="${
-      obj.username
-    }" role="tabpanel">
-        <div class="card w-100 m-0 d-flex flex-column flex-md-row">
+      <div class="container tab-pane fade ${
+        counter === 0 ? "show active" : ""
+      }" id="${obj.username}" role="tabpanel">
+        <div class="card w-100 mw-100 m-0 d-flex flex-column flex-md-row bg-dark text-light">
           <img class="profile-img justify-self-center align-self-center m-2" src="${
             obj.profilePic
           }" alt="${obj.firstName} ${obj.lastName}">
           <div id="${
             obj.username
-          }CardBody" class="card-body d-flex flex-column justify-content-center align-items-center p-1 m-1">
+          }CardBody" class="card-body d-flex flex-column justify-content-center align-items-center p-1 m-1 mw-75 bg-dark text-light">
             <h5 class="card-title">${obj.firstName} ${obj.lastName}</h5>
-            <ul id="${obj.username}CardList" class="list-group p-2">
-            <li class="list-group-item">${obj.email}</li>
-            <li class="list-group-item">${obj.username}</li>
+            <ul id="${obj.username}CardList" class="list-group p-2 mw-100">
+            <li class="list-group-item p-1 fs-6">${obj.email}</li>
+            <li class="list-group-item p-1">${obj.username}</li>
             </ul>
           </div>
         </div>
@@ -65,7 +71,7 @@ class GenericUser {
             <div class="modal-header">
               <h5 id="${
                 obj.username
-              }DeleteModalLabel" class="modal-title">Delete User</h5>
+              }DeleteModalLabel" class="modal-title">Delete ${obj.username}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -85,6 +91,18 @@ class GenericUser {
       </div>
     `;
   };
+
+  handleAdminBurger = () => {
+    document.getElementById("adminNavBurger").addEventListener("click", () => {
+      console.log("clicked");
+      console.log(adminNavList);
+      document.getElementById("adminNavList").classList.remove("show");
+    });
+  };
+
+  /**
+   *
+   */
 
   // Getters
   get firstName() {
@@ -145,33 +163,39 @@ class GenericUser {
 class User extends GenericUser {
   constructor(firstName, lastName, email, username, profilePic) {
     super(firstName, lastName, email, username, profilePic);
-    this._admin = false;
+
     User.users.push(this); // Add this instance to list of users
   }
 
   static users = []; // To keep a dynamic list of User objects as they are created
 
   /**
-   * Method that displays the homepage for each user after a successful login
-   * Display a bootstrap nav with tabs for each user type (User and Admin)
-   * In the case of a normal user, it displays their profile and all admin
+   * Displays homepage for this User after a successful login
+   * Constructs two bootstrap nav tab containers
+   * Displays current users profile in upper container, admin profiles in lower container
+   * Takes hardcoded html elements as params and generates their innerHTML
    *
+   * @param {div} block is the outermost html container
+   * @param {li} userNavList stores generated nav tab list items for users
+   * @param {*} userNavItems stores generated nav tab content for users
+   * @param {*} adminNavList stores generated nav tab list items for admin
+   * @param {*} adminNavItems stores generated nav tab content for admin
    */
   displayHomepage = (
-    block, // Outer container
-    userNavList, // Stores nav tab list items for users
-    userNavItems, // Stores nav tab content for users
-    adminNavList, // Stores nav tab list items for admins
-    adminNavItems // Stores nav tab content for admins
+    block,
+    userNavList,
+    userNavItems,
+    adminNavList,
+    adminNavItems
   ) => {
     // Clear all previous content
     block.innerHTML = ``;
 
     // Variables to store generated HTML - makes it easier add it to the DOM all at once rather then bit by bit
-    let userNavListContent = ``;
-    let userNavItemsContent = ``;
-    let adminNavListContent = ``;
-    let adminNavItemsContent = ``;
+    let userNavListHTML = ``;
+    let userNavItemsHTML = ``;
+    let adminNavListHTML = ``;
+    let adminNavItemsHTML = ``;
 
     // Counter to keep track of first iteration of loops to add "active" class
     let activeCount = 0;
@@ -179,14 +203,14 @@ class User extends GenericUser {
     // Add the current user first so their profile is displayed
 
     // Add current user list item
-    userNavListContent += this.generateNavListItem(this, activeCount);
+    userNavListHTML += this.generateNavListItem(this, activeCount);
 
     // Add associated content for that nav tab
-    userNavItemsContent += this.generateNavItem(this, activeCount);
+    userNavItemsHTML += this.generateNavItem(this, activeCount);
 
     // Add all of the admin to the admin nav list
     for (let admin of Admin.admins) {
-      adminNavListContent += this.generateNavListItem(admin, activeCount);
+      adminNavListHTML += this.generateNavListItem(admin, activeCount);
 
       activeCount += 1;
     }
@@ -195,20 +219,20 @@ class User extends GenericUser {
 
     // Add associated content for admin list
     for (let admin of Admin.admins) {
-      adminNavItemsContent += this.generateNavItem(admin, activeCount);
+      adminNavItemsHTML += this.generateNavItem(admin, activeCount);
 
       activeCount += 1;
     }
 
     // Add user content to DOM
-    userNavList.innerHTML = userNavListContent;
-    userNavItems.innerHTML = userNavItemsContent;
+    userNavList.innerHTML = userNavListHTML;
+    userNavItems.innerHTML = userNavItemsHTML;
     userDisplay.appendChild(userNavList);
     userDisplay.appendChild(userNavItems);
 
     // Add admin content to DOM
-    adminNavList.innerHTML = adminNavListContent;
-    adminNavItems.innerHTML = adminNavItemsContent;
+    adminNavList.innerHTML = adminNavListHTML;
+    adminNavItems.innerHTML = adminNavItemsHTML;
     adminDisplay.appendChild(adminNavList);
     adminDisplay.appendChild(adminNavItems);
 
@@ -223,27 +247,30 @@ class User extends GenericUser {
 /**
  *  The Admin class is similar to User, but with increased privledges
  *
- *  Privledges:
- *    - View every user profile
- *    - Make changes to normal users - including deleting profiles
  */
 class Admin extends GenericUser {
   constructor(firstName, lastName, email, username, profilePic) {
     super(firstName, lastName, email, username, profilePic);
 
-    this._admin = true;
     Admin.admins.push(this); // Add current instance to list
   }
 
   static admins = []; // Dynamically keeps an array of Admin instances
-  deleteBtns = [];
+  modalElements = [];
 
   /**
+   * Displays homepage for this instance of Admin after a successful login
+   * Constructs two containers with nav tab items
+   * In the upper container, all admin profiles are displayed
+   * In the lower container, all user profiiles are displayed
    *
-   * For instance of Admin, the displayHomepage() method displays all User profiles in addition to all Admin profiles
-   * This is distinct from the displayHomepage() method in the User class, which displays just the current
-   * user's profile along with all Admin profiles
-   *
+   * Some hardcoded HTML containers are passed in to facilitate construction:
+   * @param {div} block is the outermost container
+   * @param {li} userNavList holds nav list items for users
+   * @param {div} userNavItems contains nav content for users
+   * @param {li} adminNavList contains nav list items for admin
+   * @param {div} adminNavItems contains nav content for admin
+   * @param {span} homepageTitle is a container for the welcome message
    */
   displayHomepage = (
     block,
@@ -251,42 +278,44 @@ class Admin extends GenericUser {
     userNavItems,
     adminNavList,
     adminNavItems,
-    homepageTitle
+    homepageTitle,
+    adminNavListCollapse
   ) => {
     // Clear all previous content
     // block.innerHTML = ``;
 
     // Store new content
-    let userNavListContent = ``;
-    let userNavItemsContent = ``;
-    let adminNavListContent = ``;
-    let adminNavItemsContent = ``;
-    let activeCount = 0;
+    let userNavListHTML = ``;
+    let userNavItemsHTML = ``;
+    let adminNavListHTML = ``;
+    let adminNavItemsHTML = ``;
+
+    let activeCount = 0; // Keep track of first item in list
 
     // Add the current user (Admin) first
-    adminNavListContent += this.generateNavListItem(this, activeCount);
-    adminNavItemsContent += this.generateNavItem(this, activeCount);
+    adminNavListHTML += this.generateNavListItem(this, activeCount);
+    adminNavItemsHTML += this.generateNavItem(this, activeCount);
     activeCount += 1;
 
     // Add all of the admin to the admin nav list
     for (let admin of Admin.admins) {
       if (admin.username === this.username) continue; // So the current user isn't added twice
 
-      adminNavListContent += this.generateNavListItem(admin, activeCount);
+      adminNavListHTML += this.generateNavListItem(admin, activeCount);
     }
 
     // Add all of the associated content for each admin
     for (let admin of Admin.admins) {
       if (admin.username === this.username) continue;
 
-      adminNavItemsContent += this.generateNavItem(admin, activeCount);
+      adminNavItemsHTML += this.generateNavItem(admin, activeCount);
     }
 
     activeCount = 0;
 
     // Add all of the users to the user nav
     for (let user of User.users) {
-      userNavListContent += this.generateNavListItem(user, activeCount);
+      userNavListHTML += this.generateNavListItem(user, activeCount);
 
       activeCount += 1;
     }
@@ -294,67 +323,79 @@ class Admin extends GenericUser {
     activeCount = 0;
 
     for (let user of User.users) {
-      userNavItemsContent += this.generateNavItem(user, activeCount);
+      userNavItemsHTML += this.generateNavItem(user, activeCount);
 
       activeCount += 1;
     }
 
-    userNavList.innerHTML = userNavListContent;
-    userNavItems.innerHTML = userNavItemsContent;
-    userDisplay.appendChild(userNavList);
+    userNavList.innerHTML = userNavListHTML;
+    userNavItems.innerHTML = userNavItemsHTML;
+    userNavListCollapse.appendChild(userNavList);
     userDisplay.appendChild(userNavItems);
 
-    adminNavList.innerHTML = adminNavListContent;
-    adminNavItems.innerHTML = adminNavItemsContent;
-    adminDisplay.appendChild(adminNavList);
+    adminNavList.innerHTML = adminNavListHTML;
+    adminNavItems.innerHTML = adminNavItemsHTML;
+    adminNavListCollapse.appendChild(adminNavList);
     adminDisplay.appendChild(adminNavItems);
 
     homepageTitle.innerText = `Welcome, ${this.firstName} ${this.lastName}`;
 
     this.addDeleteBtnsForUsers();
-    this.addListenerToDeleteBtns();
+    // this.addListenerToDeleteBtns();
+  };
+
+  getElementsForDeleteModal = (user, btn) => {
+    const div = document.getElementById(user.username);
+    const li = document.getElementById(`${user.username}Li`);
+    const modal = document.getElementById(`${user.username}DeleteModal`);
+    const modalDeleteBtn = document.getElementById(
+      `${user.username}ModalDeleteBtn`
+    );
+    const modalCancelBtn = document.getElementById(
+      `${user.username}ModalCancelBtn`
+    );
+
+    let modalElementsObj = {
+      div: div,
+      button: btn,
+      li: li,
+      modal: modal,
+      modalDeleteBtn: modalDeleteBtn,
+      modalCancelBtn: modalCancelBtn,
+    };
+
+    return modalElementsObj;
   };
 
   /**
-   * Adds delete buttons for each user, giving Admins the ability to
+   * Create delete button
+   */
+  createDeleteBtn(user) {
+    const btn = document.createElement("button");
+    btn.classList = "btn btn-danger mx-4 mt-2 p-1 ";
+    btn.setAttribute("data-bs-toggle", "modal");
+    btn.setAttribute("data-bs-target", `#${user.username}DeleteModal`);
+    btn.textContent = `Delete`;
+
+    return btn;
+  }
+
+  /**
+   * Adds delete buttons to each user profile, giving Admins the ability to
    * delete user profiles
-   *
+   * It also gets a bunch of information about the user as it's adding the button
+   * to the profile, which will be destructured later when adding event listeners to
+   * the button
    */
   addDeleteBtnsForUsers = () => {
-    // For every user
     for (let user of User.users) {
-      // Get their tab pane container
-      const div = document.getElementById(user.username);
-      const cardList = document.getElementById(`${user.username}CardList`);
-      // Get their associated tab list item
-      const li = document.getElementById(`${user.username}Li`);
-      const modal = document.getElementById(`${user.username}DeleteModal`);
-      const modalDeleteBtn = document.getElementById(
-        `${user.username}ModalDeleteBtn`
-      );
-      const modalCancelBtn = document.getElementById(
-        `${user.username}ModalCancelBtn`
-      );
+      // Get ul that's in user's card
+      let cardList = document.getElementById(`${user.username}CardList`);
+      let btn = this.createDeleteBtn(user);
+      let modalElements = this.getElementsForDeleteModal(user, btn);
 
-      const btn = document.createElement("button");
-      btn.classList = "btn btn-danger mx-5 mt-2 ";
-      btn.setAttribute("data-bs-toggle", "modal");
-      btn.setAttribute("data-bs-target", `#${user.username}DeleteModal`);
-      btn.textContent = `Delete ${user.username}`;
-
-      // Append a child inside their card
       cardList.appendChild(btn);
-
-      // Add their button and list item to an array so we can
-      // add the event listeners later
-      this.deleteBtns.push({
-        div: div,
-        button: btn,
-        li: li,
-        modal: modal,
-        modalDeleteBtn: modalDeleteBtn,
-        modalCancelBtn: modalCancelBtn,
-      });
+      this.addListenerToDeleteBtns(modalElements);
     }
   };
 
@@ -364,30 +405,27 @@ class Admin extends GenericUser {
    *  and removes the list item associated with that card
    *
    */
-  addListenerToDeleteBtns = () => {
-    this.deleteBtns.forEach((obj) => {
-      let { div, button, li, modal, modalDeleteBtn, modalCancelBtn } = obj;
-      modal = new bootstrap.Modal(modal);
-      button.addEventListener("click", () => {
-        // Pop up modal - Are you sure you want to delete?
-        // If yes,
-        modal.show();
+  addListenerToDeleteBtns = (modalElementsObj) => {
+    let { div, button, li, modal, modalDeleteBtn, modalCancelBtn } =
+      modalElementsObj;
 
-        modalDeleteBtn.addEventListener("click", () => {
-          div.remove();
-          li.remove();
-        });
+    modal = new bootstrap.Modal(modal);
+    button.addEventListener("click", () => {
+      // Pop up modal - Are you sure you want to delete?
+      // If yes,
+      modal.show();
 
-        modalCancelBtn.addEventListener("click", () => {
-          modal.hide();
-        });
-        // div.remove(); // Remove the card (the button's parent)
-        // li.remove(); // Remove the associated list item
-
-        // If no, close modal
-
-        // TODO: Think about deleting the user from the actual arrw
+      modalDeleteBtn.addEventListener("click", () => {
+        console.log(div);
+        div.remove();
+        li.remove();
       });
+
+      modalCancelBtn.addEventListener("click", () => {
+        modal.hide();
+      });
+
+      // TODO: Think about deleting the user from the actual arrw
     });
   };
 }
@@ -461,7 +499,7 @@ let gimli = new User(
 let elrond = new User(
   "Elrond",
   "Half-elven",
-  "elrond@rivendell.orc",
+  "elrond@riv.orc",
   "elrond",
   "images/elrond.webp"
 );
@@ -492,8 +530,8 @@ let lobelia = new User(
 
 let legolas = new User(
   "Legolas",
-  ", son of Thranduil",
-  "legomyeggo@rivendell.orc",
+  "",
+  "legoboy@riv.orc",
   "legolas",
   "images/legolas.webp"
 );
@@ -509,7 +547,7 @@ let sauron = new User(
 let saruman = new User(
   "Saruman",
   "the White",
-  "saruman@midearth.orc",
+  "saru@midearth.orc",
   "saruman",
   "images/saruman.webp"
 );
@@ -521,15 +559,19 @@ const userDisplayContainer = document.getElementById("userDisplayContainer");
 
 const adminNavList = document.getElementById("adminNavList");
 const adminNavItems = document.getElementById("adminNavItems");
+const adminNavListCollapse = document.getElementById("adminNavListCollapse");
 const userNavList = document.getElementById("userNavList");
 const userNavItems = document.getElementById("userNavItems");
 const userDisplay = document.getElementById("userDisplay");
 const adminDisplay = document.getElementById("adminDisplay");
 const homepageTitle = document.getElementById("homepageTitle");
+const usernameInput = document.getElementById("usernameInput");
 
 const logout = () => {
   loginFormContainer.classList.remove("hidden");
   userDisplayContainer.classList.add("hidden");
+
+  usernameInput.value = "";
 };
 
 const logoutBtn = document.getElementById("logoutBtn");
@@ -538,7 +580,7 @@ loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
   // Get username value entered by user
-  const usernameInputValue = document.getElementById("usernameInput").value;
+  const usernameInputValue = usernameInput.value;
 
   // Get an array of all User and Admin instances
   let allUsers = User.users.concat(Admin.admins);
@@ -565,7 +607,9 @@ loginForm.addEventListener("submit", (e) => {
       userNavItems,
       adminNavList,
       adminNavItems,
-      homepageTitle
+      homepageTitle,
+      adminNavListCollapse,
+      userNavListCollapse
     );
 
     userDisplayContainer.classList.remove("hidden"); // Show homepage content
@@ -575,4 +619,60 @@ loginForm.addEventListener("submit", (e) => {
 
 logoutBtn.addEventListener("click", () => {
   logout();
+});
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   adminNavBurger.addEventListener("click", () => {
+//     setTimeout(() => {
+//       adminNavListCollapse.classList.remove("show");
+//     }, 500);
+//   });
+// });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const adminNavBurger = document.getElementById("adminNavBurger");
+  const adminNavListCollapse = document.getElementById("adminNavListCollapse");
+
+  const userNavBurger = document.getElementById("userNavBurger");
+  const userNavListCollapse = document.getElementById("userNavListCollapse");
+
+  adminNavBurger.addEventListener("click", () => {
+    // Manually toggle the 'show' class
+    if (adminNavListCollapse.classList.contains("show")) {
+      adminNavListCollapse.classList.remove("show");
+    } else {
+      adminNavListCollapse.classList.add("show");
+    }
+  });
+
+  // Prevent Bootstrap from automatically adding the 'show' class
+  adminNavListCollapse.addEventListener("hide.bs.collapse", (e) => {
+    e.preventDefault(); // Prevent default behavior
+    adminNavListCollapse.classList.remove("show");
+  });
+
+  adminNavListCollapse.addEventListener("show.bs.collapse", (e) => {
+    e.preventDefault(); // Prevent default behavior
+    adminNavListCollapse.classList.add("show");
+  });
+
+  userNavBurger.addEventListener("click", () => {
+    // Manually toggle the 'show' class
+    if (userNavListCollapse.classList.contains("show")) {
+      userNavListCollapse.classList.remove("show");
+    } else {
+      userNavListCollapse.classList.add("show");
+    }
+  });
+
+  // Prevent Bootstrap from automatically adding the 'show' class
+  userNavListCollapse.addEventListener("hide.bs.collapse", (e) => {
+    e.preventDefault(); // Prevent default behavior
+    userNavListCollapse.classList.remove("show");
+  });
+
+  userNavListCollapse.addEventListener("show.bs.collapse", (e) => {
+    e.preventDefault(); // Prevent default behavior
+    userNavListCollapse.classList.add("show");
+  });
 });
