@@ -32,6 +32,8 @@ class GenericUser {
      `;
   };
 
+  editUser = () => {};
+
   /**
    * Generates bootstrap nav tab content for their associated list item
    *
@@ -43,10 +45,10 @@ class GenericUser {
    */
   generateNavItem = (obj, counter) => {
     return `
-      <div class="container tab-pane fade ${
+      <div class="container tab-pane fade p-0 ${
         counter === 0 ? "show active" : ""
       }" id="${obj.username}" role="tabpanel">
-        <div class="card w-100 mw-100 m-0 d-flex flex-column flex-md-row bg-dark text-light">
+        <div class="card w-100 mw-100 m-0 d-flex flex-column flex-md-row bg-dark text-light border border-2 rounded border-secondary">
           <img class="profile-img justify-self-center align-self-center m-2" src="${
             obj.profilePic
           }" alt="${obj.firstName} ${obj.lastName}">
@@ -188,62 +190,63 @@ class User extends GenericUser {
     adminNavList,
     adminNavItems
   ) => {
-    // Clear all previous content
-    block.innerHTML = ``;
-
-    // Variables to store generated HTML - makes it easier add it to the DOM all at once rather then bit by bit
     let userNavListHTML = ``;
     let userNavItemsHTML = ``;
     let adminNavListHTML = ``;
     let adminNavItemsHTML = ``;
 
-    // Counter to keep track of first iteration of loops to add "active" class
-    let activeCount = 0;
+    let activeCount = 0; // Keep track of first item in list
 
-    // Add the current user first so their profile is displayed
-
-    // Add current user list item
+    // Add the current User first
     userNavListHTML += this.generateNavListItem(this, activeCount);
-
-    // Add associated content for that nav tab
     userNavItemsHTML += this.generateNavItem(this, activeCount);
+    activeCount += 1;
+
+    for (let user of User.users) {
+      if (user.username === this.username) continue;
+
+      userNavItemsHTML += this.generateNavItem(user, activeCount);
+      activeCount += 1;
+    }
+
+    activeCount = 0;
 
     // Add all of the admin to the admin nav list
     for (let admin of Admin.admins) {
       adminNavListHTML += this.generateNavListItem(admin, activeCount);
-
       activeCount += 1;
     }
+    activeCount = 0;
 
-    activeCount = 0; // Reset counter
-
-    // Add associated content for admin list
+    // Add all of the associated content for each admin
     for (let admin of Admin.admins) {
       adminNavItemsHTML += this.generateNavItem(admin, activeCount);
-
       activeCount += 1;
     }
 
-    // Add user content to DOM
+    activeCount = 0;
+
     userNavList.innerHTML = userNavListHTML;
     userNavItems.innerHTML = userNavItemsHTML;
-    userDisplay.appendChild(userNavList);
+    userNavListCollapse.appendChild(userNavList);
     userDisplay.appendChild(userNavItems);
 
-    // Add admin content to DOM
     adminNavList.innerHTML = adminNavListHTML;
     adminNavItems.innerHTML = adminNavItemsHTML;
-    adminDisplay.appendChild(adminNavList);
+    adminNavListCollapse.appendChild(adminNavList);
     adminDisplay.appendChild(adminNavItems);
 
-    // Append children to outer container
-    block.appendChild(userDisplay);
-    block.appendChild(adminDisplay);
+    // Switch around display containers so that the User's profile is at the top of the page
+    block.insertBefore(
+      document.getElementById("userContainer"),
+      document.getElementById("adminContainer")
+    );
+
+    document.getElementById("userTitle").innerText = `Your Profile`;
 
     homepageTitle.innerText = `Welcome, ${this.firstName} ${this.lastName}`;
   };
 }
-
 /**
  *  The Admin class is similar to User, but with increased privledges
  *
@@ -444,7 +447,7 @@ let gandalf = new Admin(
   "the Grey",
   "gandalf@shire.orc",
   "gandalf",
-  "images/gandalf_profilepic.jpeg"
+  "images/gandalf.webp"
 );
 
 let tomBombadil = new Admin(
@@ -496,12 +499,12 @@ let gimli = new User(
   "images/gimli.webp"
 );
 
-let elrond = new User(
-  "Elrond",
-  "Half-elven",
-  "elrond@riv.orc",
-  "elrond",
-  "images/elrond.webp"
+let boromir = new User(
+  "Boromir",
+  "",
+  "boromir@gondor.orc",
+  "boromir",
+  "images/boromir.webp"
 );
 
 let aragorn = new User(
@@ -621,14 +624,6 @@ logoutBtn.addEventListener("click", () => {
   logout();
 });
 
-// document.addEventListener("DOMContentLoaded", () => {
-//   adminNavBurger.addEventListener("click", () => {
-//     setTimeout(() => {
-//       adminNavListCollapse.classList.remove("show");
-//     }, 500);
-//   });
-// });
-
 document.addEventListener("DOMContentLoaded", () => {
   const adminNavBurger = document.getElementById("adminNavBurger");
   const adminNavListCollapse = document.getElementById("adminNavListCollapse");
@@ -675,4 +670,27 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault(); // Prevent default behavior
     userNavListCollapse.classList.add("show");
   });
+});
+
+const audio = document.getElementById("audio");
+const playBtn = document.getElementById("playBtn");
+const volumeControl = document.getElementById("volumeControl");
+
+const togglePlay = () => {
+  if (audio.paused) {
+    audio.play();
+    playBtn.innerHTML = `<i class="bi bi-pause-fill"</i>`;
+  } else {
+    audio.pause();
+    playBtn.innerHTML = `<i class="bi bi-play-fill"</i>`;
+  }
+};
+
+const setVolume = (value) => {
+  audio.volume = value;
+};
+
+playBtn.addEventListener("click", togglePlay);
+volumeControl.addEventListener("change", (e) => {
+  setVolume(e.target.value);
 });

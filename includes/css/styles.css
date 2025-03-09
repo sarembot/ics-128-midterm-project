@@ -1,5 +1,5 @@
 * {
-  border: 0.1px dotted green;
+  /* border: 0.1px dotted green; */
   font-family: "Uncial Antiqua", system-ui;
 }
 
@@ -55,6 +55,13 @@ body {
   font-size: 0.9em;
 }
 
+#adminNavList,
+#userNavList {
+  position: absolute;
+  z-index: 2;
+  top: 55px;
+}
+
 #adminNavBurger,
 #userNavBurger {
   position: relative;
@@ -79,3 +86,34 @@ body {
     }
   }
 } */
+
+.navbar-toggler-icon {
+  background-color: var(--main-color);
+  cursor: pointer;
+}
+
+/* Animation for hamburger icons */
+@keyframes burger_swivel {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  50% {
+    transform: rotateZ(-15deg);
+  }
+  100% {
+    transform: rotateZ(0deg);
+  }
+}
+
+.navbar-toggler:hover {
+  animation: burger_swivel 0.5s ease-out;
+}
+
+/* Post Mobile */
+@media (min-width: 768px) {
+  #userNavList,
+  #adminNavList {
+    position: relative;
+    top: 0;
+  }
+}
