@@ -59,17 +59,15 @@ body {
 #userNavList {
   position: absolute;
   z-index: 2;
-  top: 55px;
+  top: 0;
+  right: 0;
 }
 
 #adminNavBurger,
 #userNavBurger {
   position: relative;
-  left: 30px;
-  top: 5px;
   z-index: 1;
-  width: 25px;
-  height: 25px;
+  height: 35px;
   aspect-ratio: 1/1;
 }
 /* 
@@ -98,7 +96,7 @@ body {
     transform: rotateZ(0deg);
   }
   50% {
-    transform: rotateZ(-15deg);
+    transform: rotateZ(15deg);
   }
   100% {
     transform: rotateZ(0deg);
@@ -115,5 +113,10 @@ body {
   #adminNavList {
     position: relative;
     top: 0;
+    left: 0;
   }
+}
+
+.fs-btn {
+  font-size: 0.8em;
 }

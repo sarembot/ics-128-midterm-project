@@ -5,13 +5,13 @@
  * instances of the User class and instances of the Admin class
  */
 class GenericUser {
-  constructor(firstName, lastName, email, username, profilePic) {
+  constructor(firstName, lastName, email, username, profilePic, age) {
     this._firstName = firstName;
     this._lastName = lastName;
     this._email = email;
     this._username = username;
     this._profilePic = profilePic;
-    this._admin = false;
+    this._age = age;
   }
 
   /**
@@ -48,7 +48,7 @@ class GenericUser {
       <div class="container tab-pane fade p-0 ${
         counter === 0 ? "show active" : ""
       }" id="${obj.username}" role="tabpanel">
-        <div class="card w-100 mw-100 m-0 d-flex flex-column flex-md-row bg-dark text-light border border-2 rounded border-secondary">
+        <div class="card w-100 mw-100 m-0 d-flex flex-column flex-md-row bg-dark text-light">
           <img class="profile-img justify-self-center align-self-center m-2" src="${
             obj.profilePic
           }" alt="${obj.firstName} ${obj.lastName}">
@@ -56,9 +56,27 @@ class GenericUser {
             obj.username
           }CardBody" class="card-body d-flex flex-column justify-content-center align-items-center p-1 m-1 mw-75 bg-dark text-light">
             <h5 class="card-title">${obj.firstName} ${obj.lastName}</h5>
-            <ul id="${obj.username}CardList" class="list-group p-2 mw-100">
-            <li class="list-group-item p-1 fs-6">${obj.email}</li>
-            <li class="list-group-item p-1">${obj.username}</li>
+            <ul id="${
+              obj.username
+            }CardList" class="list-group list-group-flush p-2 mw-100">
+              <li class="list-group-item p-1 text-light bg-dark">
+                <div class="d-flex flex-column align-items-start">
+                  <div class="text-white-50 fw-medium">Username</div>
+                    <span>${obj.username}</span>
+                </div>
+              </li>
+              <li class="list-group-item p-1 text-light bg-dark">
+                <div class="d-flex flex-column align-items-start">
+                    <div class="text-white-50 fw-medium">Email</div>
+                      <span>${obj.email}</span>
+                </div>
+              </li>
+              <li class="list-group-item p-1 text-light bg-dark">
+                <div class="d-flex flex-column align-items-start">
+                  <div class="text-white-50 fw-medium">Age</div>
+                    <span>${obj.age}</span>
+                </div>
+              </li>
             </ul>
           </div>
         </div>
@@ -131,6 +149,10 @@ class GenericUser {
     return this._admin;
   }
 
+  get age() {
+    return this._age;
+  }
+
   // Setters
   set firstName(firstName) {
     this._firstName = firstName;
@@ -155,6 +177,10 @@ class GenericUser {
   set admin(admin) {
     this._admin = admin;
   }
+
+  set age(age) {
+    this._age = age;
+  }
 }
 
 /**
@@ -163,8 +189,8 @@ class GenericUser {
  *
  */
 class User extends GenericUser {
-  constructor(firstName, lastName, email, username, profilePic) {
-    super(firstName, lastName, email, username, profilePic);
+  constructor(firstName, lastName, email, username, profilePic, age) {
+    super(firstName, lastName, email, username, profilePic, age);
 
     User.users.push(this); // Add this instance to list of users
   }
@@ -252,8 +278,8 @@ class User extends GenericUser {
  *
  */
 class Admin extends GenericUser {
-  constructor(firstName, lastName, email, username, profilePic) {
-    super(firstName, lastName, email, username, profilePic);
+  constructor(firstName, lastName, email, username, profilePic, age) {
+    super(firstName, lastName, email, username, profilePic, age);
 
     Admin.admins.push(this); // Add current instance to list
   }
@@ -375,10 +401,17 @@ class Admin extends GenericUser {
    */
   createDeleteBtn(user) {
     const btn = document.createElement("button");
-    btn.classList = "btn btn-danger mx-4 mt-2 p-1 ";
+    const span = document.createElement("span");
+
+    btn.classList =
+      "btn btn-danger mx-4 mt-3 p-0 border border-2 border-black text-black";
     btn.setAttribute("data-bs-toggle", "modal");
     btn.setAttribute("data-bs-target", `#${user.username}DeleteModal`);
-    btn.textContent = `Delete`;
+
+    span.classList = "fs-btn";
+    span.textContent = `Delete`;
+
+    btn.appendChild(span);
 
     return btn;
   }
@@ -439,7 +472,8 @@ let bilbo = new Admin(
   "Baggins",
   "bilbo@shire.orc",
   "bilbo",
-  "images/bilbo.webp"
+  "images/bilbo.webp",
+  111
 );
 
 let gandalf = new Admin(
@@ -447,7 +481,8 @@ let gandalf = new Admin(
   "the Grey",
   "gandalf@shire.orc",
   "gandalf",
-  "images/gandalf.webp"
+  "images/gandalf.webp",
+  10346
 );
 
 let tomBombadil = new Admin(
@@ -455,7 +490,8 @@ let tomBombadil = new Admin(
   "Bombadil",
   "tommy@shire.orc",
   "tombom",
-  "images/tombom.webp"
+  "images/tombom.webp",
+  "Ancient"
 );
 
 // Create User instances
@@ -464,7 +500,8 @@ let frodo = new User(
   "Baggins",
   "frodo@shire.orc",
   "frodo",
-  "images/frodo.webp"
+  "images/frodo.webp",
+  50
 );
 
 let samwise = new User(
@@ -472,7 +509,8 @@ let samwise = new User(
   "Gamgee",
   "sammyg@shire.orc",
   "samwise",
-  "images/samwise.webp"
+  "images/samwise.webp",
+  38
 );
 
 let pippin = new User(
@@ -480,7 +518,8 @@ let pippin = new User(
   "Took",
   "pippin@shire.orc",
   "pippin",
-  "images/pippin.webp"
+  "images/pippin.webp",
+  28
 );
 
 let merry = new User(
@@ -488,7 +527,8 @@ let merry = new User(
   "Brandybuck",
   "merry@shire.orc",
   "merry",
-  "images/merry.webp"
+  "images/merry.webp",
+  36
 );
 
 let gimli = new User(
@@ -496,7 +536,8 @@ let gimli = new User(
   "Son of Glóin",
   "gimli@dwarf.orc",
   "gimli",
-  "images/gimli.webp"
+  "images/gimli.webp",
+  139
 );
 
 let boromir = new User(
@@ -504,7 +545,8 @@ let boromir = new User(
   "",
   "boromir@gondor.orc",
   "boromir",
-  "images/boromir.webp"
+  "images/boromir.webp",
+  40
 );
 
 let aragorn = new User(
@@ -512,7 +554,8 @@ let aragorn = new User(
   "",
   "aragorn@gondor.orc",
   "aragorn",
-  "images/aragorn.webp"
+  "images/aragorn.webp",
+  87
 );
 
 let gollum = new User(
@@ -520,7 +563,8 @@ let gollum = new User(
   "",
   "gollum@midearth.orc",
   "gollum",
-  "images/gollum.webp"
+  "images/gollum.webp",
+  589
 );
 
 let lobelia = new User(
@@ -528,7 +572,8 @@ let lobelia = new User(
   "Sackville-Baggins",
   "lobeliosity@shire.orc",
   "lobelia",
-  "images/lobelia.webp"
+  "images/lobelia.webp",
+  102
 );
 
 let legolas = new User(
@@ -536,7 +581,8 @@ let legolas = new User(
   "",
   "legoboy@riv.orc",
   "legolas",
-  "images/legolas.webp"
+  "images/legolas.webp",
+  512
 );
 
 let sauron = new User(
@@ -544,7 +590,8 @@ let sauron = new User(
   "",
   "sauron@midearth.orc",
   "sauron",
-  "images/sauron.webp"
+  "images/sauron.webp",
+  "Immortal"
 );
 
 let saruman = new User(
@@ -552,7 +599,8 @@ let saruman = new User(
   "the White",
   "saru@midearth.orc",
   "saruman",
-  "images/saruman.webp"
+  "images/saruman.webp",
+  "Unknown"
 );
 
 const loginBtn = document.getElementById("loginBtn");

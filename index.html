@@ -98,9 +98,11 @@
       <!-- Homepage -->
       <div class="container p-3 hidden" id="userDisplayContainer">
         <!-- Upper Navbar -->
-        <nav class="navbar navbar-dark bg-dark d-flex">
+        <nav
+          class="navbar navbar-dark bg-dark d-flex justify-content-between position-fixed top-0 start-0 w-100 z-3"
+        >
           <div
-            class="container-fluid d-flex flex-row justify-content-center p-0"
+            class="container-fluid d-flex flex-row justify-content-between px-2"
           >
             <!-- Homepage Title -->
             <span id="homepageTitle" class="navbar-brand mb-0 h3"></span>
@@ -110,14 +112,19 @@
         </nav>
 
         <!-- Admin Container -->
-        <div class="container" id="adminContainer">
-          <div class="container text-light" id="adminTitle">Admins</div>
-          <!-- Admin Display -->
+        <div
+          class="container bg-dark w-100 mw-80 position-relative border border-3 border-secondary rounded mt-5"
+          id="adminContainer"
+        >
           <div
-            class="container d-flex flex-row flex-md-column px-2 py-2 border-rounded bg-dark w-100 mw-100 position-relative"
-            id="adminDisplay"
+            class="container d-flex flex-row justify-content-between p-0 mt-2"
           >
-            <!-- Nav Tab Hamburger -->
+            <!-- Admin Title -->
+
+            <span class="text-light d-flex flex-row" id="adminTitle"
+              >Admin</span
+            >
+            <!-- Admin List Hamburger -->
             <button
               class="navbar-toggler btn btn-dark btn-sm mb-2 d-block d-md-none d-flex text-light"
               type="button"
@@ -127,10 +134,17 @@
               aria-controls="adminNavListCollapse"
               data-bs-target="#adminNavListCollapse"
             >
-              <span class="border border-secondary text-secondary rounded p-1"
+              <span
+                class="border border-2 border-secondary text-secondary rounded p-1"
                 >☰</span
               >
             </button>
+          </div>
+          <div
+            class="container d-flex flex-row flex-md-column bg-dark w-100 mw-80 position-relative"
+            id="adminDisplay"
+          >
+            <!-- Admin List -->
             <div id="adminNavListCollapse" class="collapse d-md-block">
               <ul
                 id="adminNavList"
@@ -138,19 +152,23 @@
                 role="tablist"
               ></ul>
             </div>
-
-            <div id="adminNavItems" class="tab-content w-100 m-0"></div>
           </div>
+          <!-- Admin Nav Content -->
+          <div id="adminNavItems" class="tab-content w-100 m-0"></div>
         </div>
+
         <!-- User Container -->
-        <div class="container" id="userContainer">
-          <!-- User Title -->
-          <div class="container text-light" id="userTitle">Users</div>
-          <!-- User Display -->
+        <div
+          class="container bg-dark w-100 mw-80 position-relative border border-3 border-secondary rounded mt-5"
+          id="userContainer"
+        >
           <div
-            class="container d-flex flex-row flex-md-column p2-5 py-3 bg-dark w-100 mw-80 position-relative"
-            id="userDisplay"
+            class="container d-flex flex-row justify-content-between p-0 mt-2"
           >
+            <!-- User Title -->
+
+            <span class="text-light d-flex flex-row" id="userTitle">Users</span>
+            <!-- User List Hamburger -->
             <button
               class="navbar-toggler btn btn-dark btn-sm mb-2 d-block d-md-none d-flex text-light"
               type="button"
@@ -160,10 +178,17 @@
               aria-controls="userNavListCollapse"
               data-bs-target="#userNavListCollapse"
             >
-              <span class="border border-secondary text-secondary rounded p-1"
+              <span
+                class="border border-2 border-secondary text-secondary rounded p-1"
                 >☰</span
               >
             </button>
+          </div>
+          <div
+            class="container d-flex flex-row flex-md-column bg-dark w-100 mw-80 position-relative"
+            id="userDisplay"
+          >
+            <!-- User List -->
             <div id="userNavListCollapse" class="collapse d-md-block">
               <ul
                 id="userNavList"
@@ -172,6 +197,7 @@
               ></ul>
             </div>
           </div>
+          <!-- User Nav Content -->
           <div id="userNavItems" class="tab-content w-100 m-0"></div>
         </div>
       </div>
