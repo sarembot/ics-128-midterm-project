@@ -3,22 +3,25 @@
 /**
  * GenericUser defines attributes and behaviours that are common among both
  * instances of the User class and instances of the Admin class
+ *
+ * Attributes:
+ *
  */
 class GenericUser {
-  constructor(firstName, lastName, email, username, profilePic, age) {
-    this._firstName = firstName;
-    this._lastName = lastName;
-    this._email = email;
+  constructor(name, username, email, race, height, img) {
+    this._name = name;
     this._username = username;
-    this._profilePic = profilePic;
-    this._age = age;
+    this._email = email;
+    this._race = race;
+    this._height = height;
+    this._img = img;
   }
 
   /**
    * Generates a list item in Bootstrap nav tab format
    *
-   * @param {l} obj specifies the object who's information is interpolated
-   * @param {*} counter is used to keep track of the first item on the list to
+   * @param {this} obj specifies the object who's information is interpolated
+   * @param {number} counter is used to keep track of the first item on the list to
    * include the "active" bootstrap class
    * @returns an <li> tag containing proper bootstrap format for nav tab list items
    */
@@ -37,8 +40,8 @@ class GenericUser {
   /**
    * Generates bootstrap nav tab content for their associated list item
    *
-   * @param {object} obj specifies the object who's information is interpolated
-   * @param {integer} counter is used to keep track of the first item on the list to
+   * @param {this} obj specifies the object who's information is interpolated
+   * @param {number} counter is used to keep track of the first item on the list to
    * include the "show active" bootstrap class
    * @returns a <div> element of class tab-pane, containing a bootstrap card with
    * obj (user) that displays user information
@@ -50,33 +53,44 @@ class GenericUser {
       }" id="${obj.username}" role="tabpanel">
         <div class="card w-100 mw-100 m-0 d-flex flex-column flex-md-row bg-dark text-light">
           <img class="profile-img justify-self-center align-self-center m-2" src="${
-            obj.profilePic
-          }" alt="${obj.firstName} ${obj.lastName}">
+            obj.img
+          }" alt="${obj.name}">
           <div id="${
             obj.username
           }CardBody" class="card-body d-flex flex-column justify-content-center align-items-center p-1 m-1 mw-75 bg-dark text-light">
-            <h5 class="card-title">${obj.firstName} ${obj.lastName}</h5>
+            <h5 class="card-title">${obj.name}</h5>
             <ul id="${
               obj.username
             }CardList" class="list-group list-group-flush p-2 mw-100">
               <li class="list-group-item p-1 text-light bg-dark">
                 <div class="d-flex flex-column align-items-start">
                   <div class="text-white-50 fw-medium">Username</div>
-                    <span>${obj.username}</span>
+                    <span class="navLiSpan">${obj.username}</span>
                 </div>
               </li>
               <li class="list-group-item p-1 text-light bg-dark">
                 <div class="d-flex flex-column align-items-start">
                     <div class="text-white-50 fw-medium">Email</div>
-                      <span>${obj.email}</span>
+                      <span class="navLiSpan">${obj.email}</span>
                 </div>
               </li>
               <li class="list-group-item p-1 text-light bg-dark">
                 <div class="d-flex flex-column align-items-start">
-                  <div class="text-white-50 fw-medium">Age</div>
-                    <span>${obj.age}</span>
+                  <div class="text-white-50 fw-medium">Race</div>
+                    <span class="navLiSpan">${
+                      obj.race ? obj.race : "Unknown"
+                    }</span>
                 </div>
               </li>
+              <li class="list-group-item p-1 text-light bg-dark">
+                <div class="d-flex flex-column align-items-start">
+                  <div class="text-white-50 fw-medium">Height</div>
+                    <span class="navLiSpan">${
+                      obj.height ? obj.height : "Unknown"
+                    }</span>
+                </div>
+              </li>
+              
             </ul>
           </div>
         </div>
@@ -112,54 +126,46 @@ class GenericUser {
     `;
   };
 
-  handleAdminBurger = () => {
-    document.getElementById("adminNavBurger").addEventListener("click", () => {
-      console.log("clicked");
-      console.log(adminNavList);
-      document.getElementById("adminNavList").classList.remove("show");
-    });
-  };
+  // handleAdminBurger = () => {
+  //   document.getElementById("adminNavBurger").addEventListener("click", () => {
+  //     console.log("clicked");
+  //     console.log(adminNavList);
+  //     document.getElementById("adminNavList").classList.remove("show");
+  //   });
+  // };
 
   /**
    *
    */
 
   // Getters
-  get firstName() {
-    return this._firstName;
-  }
-
-  get lastName() {
-    return this._lastName;
-  }
-
-  get email() {
-    return this._email;
+  get name() {
+    return this._name;
   }
 
   get username() {
     return this._username;
   }
 
-  get profilePic() {
-    return this._profilePic;
+  get email() {
+    return this._email;
   }
 
-  get admin() {
-    return this._admin;
+  get race() {
+    return this._race;
   }
 
-  get age() {
-    return this._age;
+  get height() {
+    return this._height;
+  }
+
+  get img() {
+    return this._img;
   }
 
   // Setters
-  set firstName(firstName) {
-    this._firstName = firstName;
-  }
-
-  set lastName(lastName) {
-    this._lastName = lastName;
+  set name(name) {
+    this._name = name;
   }
 
   set email(email) {
@@ -170,16 +176,16 @@ class GenericUser {
     this._username = username;
   }
 
-  set profilePic(profilePic) {
-    this._profilePic = profilePic;
+  set race(race) {
+    this._race = race;
   }
 
-  set admin(admin) {
-    this._admin = admin;
+  set height(height) {
+    this._height = height;
   }
 
-  set age(age) {
-    this._age = age;
+  set img(img) {
+    this._img = img;
   }
 }
 
@@ -189,8 +195,8 @@ class GenericUser {
  *
  */
 class User extends GenericUser {
-  constructor(firstName, lastName, email, username, profilePic, age) {
-    super(firstName, lastName, email, username, profilePic, age);
+  constructor(name, username, email, race, height, img) {
+    super(name, username, email, race, height, img);
 
     User.users.push(this); // Add this instance to list of users
   }
@@ -201,7 +207,7 @@ class User extends GenericUser {
    * Displays homepage for this User after a successful login
    * Constructs two bootstrap nav tab containers
    * Displays current users profile in upper container, admin profiles in lower container
-   * Takes hardcoded html elements as params and generates their innerHTML
+   * Takes hardcoded html container elements as params and generates their innerHTML
    *
    * @param {div} block is the outermost html container
    * @param {li} userNavList stores generated nav tab list items for users
@@ -214,28 +220,23 @@ class User extends GenericUser {
     userNavList,
     userNavItems,
     adminNavList,
-    adminNavItems
+    adminNavItems,
+    homepageTitle,
+    userTitle,
+    adminNavListCollapse,
+    userNavListCollapse
   ) => {
+    // Some containers for generated HTML
     let userNavListHTML = ``;
     let userNavItemsHTML = ``;
     let adminNavListHTML = ``;
     let adminNavItemsHTML = ``;
 
-    let activeCount = 0; // Keep track of first item in list
+    let activeCount = 0; // Keeps track of first item in list to add "active" class
 
-    // Add the current User first
+    // Add the current User first so their profile is displayed
     userNavListHTML += this.generateNavListItem(this, activeCount);
     userNavItemsHTML += this.generateNavItem(this, activeCount);
-    activeCount += 1;
-
-    for (let user of User.users) {
-      if (user.username === this.username) continue;
-
-      userNavItemsHTML += this.generateNavItem(user, activeCount);
-      activeCount += 1;
-    }
-
-    activeCount = 0;
 
     // Add all of the admin to the admin nav list
     for (let admin of Admin.admins) {
@@ -250,16 +251,18 @@ class User extends GenericUser {
       activeCount += 1;
     }
 
-    activeCount = 0;
-
+    // Fill in parameters with generated User HTML
     userNavList.innerHTML = userNavListHTML;
     userNavItems.innerHTML = userNavItemsHTML;
     userNavListCollapse.appendChild(userNavList);
-    userDisplay.appendChild(userNavItems);
 
+    // Fill in parameters with generated Admin HTML
     adminNavList.innerHTML = adminNavListHTML;
     adminNavItems.innerHTML = adminNavItemsHTML;
     adminNavListCollapse.appendChild(adminNavList);
+
+    // Add it all to the DOM
+    userDisplay.appendChild(userNavItems);
     adminDisplay.appendChild(adminNavItems);
 
     // Switch around display containers so that the User's profile is at the top of the page
@@ -268,24 +271,24 @@ class User extends GenericUser {
       document.getElementById("adminContainer")
     );
 
-    document.getElementById("userTitle").innerText = `Your Profile`;
-
-    homepageTitle.innerText = `Welcome, ${this.firstName} ${this.lastName}`;
+    // Add custom title & welcome message
+    userTitle.innerText = `Your Profile`;
+    homepageTitle.innerText = `Welcome, ${this.name}`;
   };
 }
+
 /**
  *  The Admin class is similar to User, but with increased privledges
  *
  */
 class Admin extends GenericUser {
-  constructor(firstName, lastName, email, username, profilePic, age) {
-    super(firstName, lastName, email, username, profilePic, age);
+  constructor(name, username, email, race, height, img) {
+    super(name, username, email, race, height, img);
 
     Admin.admins.push(this); // Add current instance to list
   }
 
   static admins = []; // Dynamically keeps an array of Admin instances
-  modalElements = [];
 
   /**
    * Displays homepage for this instance of Admin after a successful login
@@ -301,6 +304,7 @@ class Admin extends GenericUser {
    * @param {div} adminNavItems contains nav content for admin
    * @param {span} homepageTitle is a container for the welcome message
    */
+
   displayHomepage = (
     block,
     userNavList,
@@ -308,7 +312,9 @@ class Admin extends GenericUser {
     adminNavList,
     adminNavItems,
     homepageTitle,
-    adminNavListCollapse
+    userTitle,
+    adminNavListCollapse,
+    userNavListCollapse
   ) => {
     // Clear all previous content
     // block.innerHTML = ``;
@@ -319,14 +325,14 @@ class Admin extends GenericUser {
     let adminNavListHTML = ``;
     let adminNavItemsHTML = ``;
 
-    let activeCount = 0; // Keep track of first item in list
+    let activeCount = 0; // Keep track of first item in list for "active" class
 
-    // Add the current user (Admin) first
+    // Add the current user (Admin) first so their profile is displayed
     adminNavListHTML += this.generateNavListItem(this, activeCount);
     adminNavItemsHTML += this.generateNavItem(this, activeCount);
     activeCount += 1;
 
-    // Add all of the admin to the admin nav list
+    // Add the remaining admin to the admin nav list
     for (let admin of Admin.admins) {
       if (admin.username === this.username) continue; // So the current user isn't added twice
 
@@ -351,28 +357,52 @@ class Admin extends GenericUser {
 
     activeCount = 0;
 
+    // Add all user content
     for (let user of User.users) {
       userNavItemsHTML += this.generateNavItem(user, activeCount);
 
       activeCount += 1;
     }
 
+    // Store generated user HTML in param containers
     userNavList.innerHTML = userNavListHTML;
     userNavItems.innerHTML = userNavItemsHTML;
     userNavListCollapse.appendChild(userNavList);
-    userDisplay.appendChild(userNavItems);
 
+    // Store generated admin HTML in param containers
     adminNavList.innerHTML = adminNavListHTML;
     adminNavItems.innerHTML = adminNavItemsHTML;
     adminNavListCollapse.appendChild(adminNavList);
+
+    // Add all content to DOM
+    userDisplay.appendChild(userNavItems);
     adminDisplay.appendChild(adminNavItems);
 
-    homepageTitle.innerText = `Welcome, ${this.firstName} ${this.lastName}`;
+    // Set custom welcome message
+    homepageTitle.innerText = `Welcome, ${this.name}`;
 
+    // Switch around display containers so that the User's profile is at the top of the page
+    block.insertBefore(
+      document.getElementById("adminContainer"),
+      document.getElementById("userContainer")
+    );
+
+    userTitle.innerText = "Users";
+
+    // Add a delete button to each user profile
     this.addDeleteBtnsForUsers();
-    // this.addListenerToDeleteBtns();
   };
 
+  /**
+   * Gets all of the elements required to make a delete button that allows admins to delete user profiles
+   * It makes it easy to add event listeners to the delete user buttons
+   * Stores all necessary elements into an object so they can be destructured later
+   * Essentially a helper function that will be used for each instance of User in addDeleteBtnsForUsers() method
+   *
+   * @param {User} user is an instance of the User class
+   * @param {button} btn is an HTML button
+   * @returns an object containing all necessary bootstrap modal elements
+   */
   getElementsForDeleteModal = (user, btn) => {
     const div = document.getElementById(user.username);
     const li = document.getElementById(`${user.username}Li`);
@@ -397,14 +427,20 @@ class Admin extends GenericUser {
   };
 
   /**
-   * Create delete button
+   * Creates an HTML button that will be used to allow Admin to delete User profiles
+   * Adds some attributes to the button so it can be attached to a modal in the pre existing HTML
+   * Serves as a helper function to create a button for each instance of User in the addDeleteBtnsForUsers() method
+   *
+   * @param {User} user is an instance of the User class
+   * @returns an HTML button with custom classes and attributes
+   *
    */
   createDeleteBtn(user) {
     const btn = document.createElement("button");
     const span = document.createElement("span");
 
     btn.classList =
-      "btn btn-danger mx-4 mt-3 p-0 border border-2 border-black text-black";
+      "btn btn-danger mx-4 mt-3 p-1 border border-2 border-black text-black";
     btn.setAttribute("data-bs-toggle", "modal");
     btn.setAttribute("data-bs-target", `#${user.username}DeleteModal`);
 
@@ -417,46 +453,31 @@ class Admin extends GenericUser {
   }
 
   /**
-   * Adds delete buttons to each user profile, giving Admins the ability to
-   * delete user profiles
-   * It also gets a bunch of information about the user as it's adding the button
-   * to the profile, which will be destructured later when adding event listeners to
-   * the button
-   */
-  addDeleteBtnsForUsers = () => {
-    for (let user of User.users) {
-      // Get ul that's in user's card
-      let cardList = document.getElementById(`${user.username}CardList`);
-      let btn = this.createDeleteBtn(user);
-      let modalElements = this.getElementsForDeleteModal(user, btn);
-
-      cardList.appendChild(btn);
-      this.addListenerToDeleteBtns(modalElements);
-    }
-  };
-
-  /**
-   *  Adds an event listener to each delete button of user profiles
-   *  that removes the buttons parent element (the profile card)
-   *  and removes the list item associated with that card
+   * Adds an event listener to a delete user button
+   * Uses the elements collected from getElementsForDeleteModal()
+   * Destructures the obj param, creates a modal object and adds event listeners to the delete button and the buttons within the modal
    *
+   * @param {obj} modalElementsObj contains all of the necessary elements to add the listeners
    */
   addListenerToDeleteBtns = (modalElementsObj) => {
+    // Destructure
     let { div, button, li, modal, modalDeleteBtn, modalCancelBtn } =
       modalElementsObj;
 
+    // Create JS modal object
     modal = new bootstrap.Modal(modal);
-    button.addEventListener("click", () => {
-      // Pop up modal - Are you sure you want to delete?
-      // If yes,
-      modal.show();
 
+    // If delete button clicked, modal pops up
+    button.addEventListener("click", () => {
+      modal.show(); // Are you sure you want to delete this profile?
+
+      // Yes, delete
       modalDeleteBtn.addEventListener("click", () => {
-        console.log(div);
         div.remove();
         li.remove();
       });
 
+      // No, take me back
       modalCancelBtn.addEventListener("click", () => {
         modal.hide();
       });
@@ -464,212 +485,213 @@ class Admin extends GenericUser {
       // TODO: Think about deleting the user from the actual arrw
     });
   };
+
+  /**
+   * Adds delete buttons to each user profile, giving Admins the ability to
+   * delete user profiles
+   * Uses all of the above methods to facilitate
+   * Loops through each instance of User, creates a button, gets the modal elements, and adds an event listener to the button
+   */
+  addDeleteBtnsForUsers = () => {
+    for (let user of User.users) {
+      // Get <ul> in current user's card
+      let cardList = document.getElementById(`${user.username}CardList`);
+
+      // Generate button for current user
+      let btn = this.createDeleteBtn(user);
+
+      // Get modal elements for current user
+      let modalElements = this.getElementsForDeleteModal(user, btn);
+
+      // Add button to DOM
+      cardList.appendChild(btn);
+
+      // Add listener to button
+      this.addListenerToDeleteBtns(modalElements);
+    }
+  };
 }
 
-// Create Admin instances
-let bilbo = new Admin(
-  "Bilbo",
-  "Baggins",
-  "bilbo@shire.orc",
-  "bilbo",
-  "images/bilbo.webp",
-  111
-);
+/**
+ * Decided to get some practice with async functions and using fetch()
+ * getUserData() uses The One API to fetch data on each character I want to create an account for
+ * It filters the response in the url using the full names of the characters
+ * Was initially making separate calls for each character but kept getting Error - Too Many Requests
+ *
+ * @returns data.docs - an array of objects, each one containing character information
+ */
+const getUserData = async () => {
+  try {
+    const url = `https://the-one-api.dev/v2/character?name=Bilbo Baggins,Gandalf,Tom Bombadil,Frodo Baggins,Samwise Gamgee,Peregrin Took,Meriadoc Brandybuck,Gimli,Boromir,Gollum,Lobelia Sackville-Baggins,Legolas,Sauron,Saruman`;
 
-let gandalf = new Admin(
-  "Gandalf",
-  "the Grey",
-  "gandalf@shire.orc",
-  "gandalf",
-  "images/gandalf.webp",
-  10346
-);
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer _aGSfUOX88FjUd31UBvu",
+        "Content-type": "application/json",
+      },
+    });
 
-let tomBombadil = new Admin(
-  "Tom",
-  "Bombadil",
-  "tommy@shire.orc",
-  "tombom",
-  "images/tombom.webp",
-  "Ancient"
-);
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
 
-// Create User instances
-let frodo = new User(
-  "Frodo",
-  "Baggins",
-  "frodo@shire.orc",
-  "frodo",
-  "images/frodo.webp",
-  50
-);
+    const data = await response.json();
+    return data.docs; // Return an array containing an object for each char
+  } catch (error) {
+    console.error(error.message);
+  }
+};
 
-let samwise = new User(
-  "Samwise",
-  "Gamgee",
-  "sammyg@shire.orc",
-  "samwise",
-  "images/samwise.webp",
-  38
-);
+// Takes a name, makes it lower case, and removes the last name if there is one
+const generateUsername = (name) => {
+  return name.toLowerCase().split(" ")[0]; // Chops two word strings in half - first name is at [0]
+};
 
-let pippin = new User(
-  "Peregrin",
-  "Took",
-  "pippin@shire.orc",
-  "pippin",
-  "images/pippin.webp",
-  28
-);
+/**
+ * Creates either an instance of User or an instance of Admin
+ * Going to be executed once for each item returned from the getUserData() function
+ *
+ * @param {String} name character name as it appears in the-one-api
+ * @param {GenericUser} user the current user
+ * @returns
+ */
+const createUser = (name, user) => {
+  let userType; // Admin or User
+  const username = generateUsername(name);
+  const email = `${username}@shire.orc`;
+  const img = `images/${username}.webp`;
 
-let merry = new User(
-  "Meriadoc",
-  "Brandybuck",
-  "merry@shire.orc",
-  "merry",
-  "images/merry.webp",
-  36
-);
+  // Set admin
+  if (username === "gandalf" || username === "tom" || username === "bilbo") {
+    userType = Admin;
+  } else {
+    userType = User;
+  }
 
-let gimli = new User(
-  "Gimli",
-  "Son of Glóin",
-  "gimli@dwarf.orc",
-  "gimli",
-  "images/gimli.webp",
-  139
-);
+  // Don't have to store in a variable since these objects are automatically added to User.users or Admin.admins
+  return new userType(user.name, username, email, user.race, user.height, img);
+};
 
-let boromir = new User(
-  "Boromir",
-  "",
-  "boromir@gondor.orc",
-  "boromir",
-  "images/boromir.webp",
-  40
-);
+/**
+ * Responsible for instantiating the instances of User and Admin
+ * Awaits the fetch for each user, then loops through the array and creates an instance of user for each item
+ */
+const initUsers = async () => {
+  const users = await getUserData();
 
-let aragorn = new User(
-  "Aragorn",
-  "",
-  "aragorn@gondor.orc",
-  "aragorn",
-  "images/aragorn.webp",
-  87
-);
+  for (let user of users) {
+    createUser(user.name, user);
+    console.log(user.username);
+  }
+};
 
-let gollum = new User(
-  "Gollum",
-  "",
-  "gollum@midearth.orc",
-  "gollum",
-  "images/gollum.webp",
-  589
-);
+initUsers();
 
-let lobelia = new User(
-  "Lobelia",
-  "Sackville-Baggins",
-  "lobeliosity@shire.orc",
-  "lobelia",
-  "images/lobelia.webp",
-  102
-);
+// HARDCODED ELEMENTS ---------------------------
 
-let legolas = new User(
-  "Legolas",
-  "",
-  "legoboy@riv.orc",
-  "legolas",
-  "images/legolas.webp",
-  512
-);
-
-let sauron = new User(
-  "Sauron",
-  "",
-  "sauron@midearth.orc",
-  "sauron",
-  "images/sauron.webp",
-  "Immortal"
-);
-
-let saruman = new User(
-  "Saruman",
-  "the White",
-  "saru@midearth.orc",
-  "saruman",
-  "images/saruman.webp",
-  "Unknown"
-);
-
+// Login Form
 const loginBtn = document.getElementById("loginBtn");
 const loginForm = document.getElementById("loginForm");
 const loginFormContainer = document.getElementById("loginFormContainer");
-const userDisplayContainer = document.getElementById("userDisplayContainer");
+const usernameInput = document.getElementById("usernameInput");
+const errorSpan = document.getElementById("errorSpan");
 
+// Homepage
+const displayContainer = document.getElementById("displayContainer");
+const homepageTitle = document.getElementById("homepageTitle");
+const logoutBtn = document.getElementById("logoutBtn");
+
+// Admin Display
+const adminContainer = document.getElementById("adminContainer");
 const adminNavList = document.getElementById("adminNavList");
 const adminNavItems = document.getElementById("adminNavItems");
 const adminNavListCollapse = document.getElementById("adminNavListCollapse");
+const adminDisplay = document.getElementById("adminDisplay");
+
+// User Display
+const userContainer = document.getElementById("userContainer");
 const userNavList = document.getElementById("userNavList");
 const userNavItems = document.getElementById("userNavItems");
+const userNavListCollapse = document.getElementById("userNavListCollapse");
 const userDisplay = document.getElementById("userDisplay");
-const adminDisplay = document.getElementById("adminDisplay");
-const homepageTitle = document.getElementById("homepageTitle");
-const usernameInput = document.getElementById("usernameInput");
+const userTitle = document.getElementById("userTitle");
 
-const logout = () => {
-  loginFormContainer.classList.remove("hidden");
-  userDisplayContainer.classList.add("hidden");
+// LOGGING IN --------------------------------------------------
 
-  usernameInput.value = "";
-};
+document.addEventListener("DOMContentLoaded", () => {
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const usernameRe = /^[a-zA-Z0-9_-]{3,20}$/;
 
-const logoutBtn = document.getElementById("logoutBtn");
+    try {
+      // Get username value entered by user
+      const usernameInputValue = usernameInput.value;
 
-loginForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+      if (!usernameRe.test(usernameInputValue))
+        throw new Error("invalidUsername");
 
-  // Get username value entered by user
-  const usernameInputValue = usernameInput.value;
+      // Get an array of all User and Admin instances
+      let allUsers = User.users.concat(Admin.admins);
 
-  // Get an array of all User and Admin instances
-  let allUsers = User.users.concat(Admin.admins);
+      // Create an array for all usernames
+      let usernames = [];
+      allUsers.forEach((user) => {
+        usernames.push(user.username);
+      });
 
-  // Create an array for all usernames
-  let usernames = [];
-  allUsers.forEach((user) => {
-    usernames.push(user.username);
+      // Get the index of the current user that's trying to login
+      let userIndex = allUsers.findIndex(
+        (user) => usernameInputValue === user.username
+      );
+
+      // Get the current instance of User or Admin that's trying to login
+      let currentUser = allUsers[userIndex];
+      console.log(currentUser);
+
+      if (!usernames.includes(usernameInputValue))
+        throw new Error("usernameNotFound");
+
+      console.log("loggin on: ", currentUser.constructor.name);
+
+      // If it's a registered user
+      currentUser.displayHomepage(
+        displayContainer,
+        userNavList,
+        userNavItems,
+        adminNavList,
+        adminNavItems,
+        homepageTitle,
+        userTitle,
+        adminNavListCollapse,
+        userNavListCollapse
+      );
+
+      displayContainer.classList.remove("hidden"); // Show homepage content
+      loginFormContainer.classList.add("hidden"); // Hide login page content
+    } catch (error) {
+      if (error.message === "invalidUsername") {
+        errorSpan.innerText = "Invalid username. Please try again.";
+      } else if (error.message === "usernameNotFound") {
+        errorSpan.innerText = "Username not found. Please try again.";
+      }
+
+      console.log(error);
+    }
   });
 
-  // Get the index of the current user that's trying to login
-  let userIndex = allUsers.findIndex(
-    (user) => usernameInputValue === user.username
-  );
+  // LOGGING OUT --------------------------------------------------
 
-  // Get the current instance of User or Admin that's trying to login
-  let currentUser = allUsers[userIndex];
+  const logout = () => {
+    loginFormContainer.classList.remove("hidden"); // Show login form
+    displayContainer.classList.add("hidden"); // Hide user homepage
 
-  // If it's a registered user
-  if (usernames.includes(usernameInputValue)) {
-    currentUser.displayHomepage(
-      userDisplayContainer,
-      userNavList,
-      userNavItems,
-      adminNavList,
-      adminNavItems,
-      homepageTitle,
-      adminNavListCollapse,
-      userNavListCollapse
-    );
+    usernameInput.value = ""; // Clear login input
+  };
 
-    userDisplayContainer.classList.remove("hidden"); // Show homepage content
-    loginFormContainer.classList.add("hidden"); // Hide login page content
-  }
-});
-
-logoutBtn.addEventListener("click", () => {
-  logout();
+  logoutBtn.addEventListener("click", () => {
+    logout();
+  });
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -719,6 +741,8 @@ document.addEventListener("DOMContentLoaded", () => {
     userNavListCollapse.classList.add("show");
   });
 });
+
+// AUDIO -------------------------------------------------
 
 const audio = document.getElementById("audio");
 const playBtn = document.getElementById("playBtn");
