@@ -527,7 +527,7 @@ const getUserData = async () => {
     const response = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: "Bearer _aGSfUOX88FjUd31UBvu",
+        Authorization: "",
         "Content-type": "application/json",
       },
     });
