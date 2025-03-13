@@ -43,22 +43,18 @@ body {
   border: 3px solid #a19b81;
 }
 
-/* .card {
-  width: 90%;
-  margin: 10px auto;
-} */
-#logoutBtn {
-  font-size: 0.55em;
-}
-
 #homepageTitle {
   font-size: 0.9em;
 }
 
+#adminNavListCollapse,
+#userNavListCollapse {
+  position: relative;
+}
 #adminNavList,
 #userNavList {
   position: absolute;
-  z-index: 2;
+  z-index: 1;
   top: 50px;
   right: 0;
 }
@@ -77,20 +73,16 @@ body {
   font-family: "EB Garamond", serif;
 }
 
-.btn {
-}
-
 #adminHamburger #errorSpan {
   font-family: "Courier New", Courier, monospace;
   font-size: 0.7em;
 }
 
 footer {
-  font-size: 0.7em;
-}
-
-footer p {
-  font-family: "Courier New", Courier, monospace;
+  font-size: 0.8em;
+  z-index: 3;
+  text-align: center;
+  height: 32px;
 }
 
 .navbar-toggler-icon {
@@ -117,19 +109,16 @@ footer p {
 
 .fs-btn {
   font-size: 0.8em;
+  padding: 3px;
   font-weight: bold;
+}
+
+.secondary-font {
   font-family: "EB Garamond", serif;
 }
 
 /* Post Mobile */
-@media (min-width: 768px) {
-  #userNavList,
-  #adminNavList {
-    position: relative;
-    top: 0;
-    left: 0;
-  }
-
+@media (min-width: 567px) {
   .fs-btn {
     font-size: 1em;
     padding: 5px;
@@ -137,5 +126,14 @@ footer p {
 
   #homepageTitle {
     font-size: 1.2em;
+  }
+}
+
+@media (min-width: 768px) {
+  #userNavList,
+  #adminNavList {
+    position: relative;
+    top: 0;
+    left: 0;
   }
 }
