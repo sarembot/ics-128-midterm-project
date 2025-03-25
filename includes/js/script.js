@@ -599,7 +599,7 @@ const getUserData = async () => {
     const response = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: "Bearer _aGSfUOX88FjUd31UBvu", // Super secret key
+        Authorization: "Bearer _aGSfUOX88FjUd31UBvu",
         "Content-type": "application/json",
       },
     });
