@@ -102,7 +102,7 @@ class GenericUser {
               </ul>
               <ul id="${
                 user.username
-              }CardList2" class="list-group list-group-flush p-2 mw-100 d-none d-md-block">
+              }CardList2" class="list-group list-group-flush p-2 mw-100 d-none d-lg-block">
                 <li class="list-group-item p-1 text-light bg-dark">
                   <div class="d-flex flex-column align-items-start">
                     <div class="text-white-50 fw-medium">Birth</div>
@@ -448,6 +448,9 @@ class Admin extends GenericUser {
 
     // Add a delete button to each user profile
     this.addDeleteBtnsForUsers();
+
+    // Show nav burger for user display
+    document.getElementById("userNavBurger").classList.remove("d-none");
   };
 
   /**
@@ -535,18 +538,18 @@ class Admin extends GenericUser {
       // Yes, delete
       modalDeleteBtn.addEventListener("click", () => {
         // Delete the user from the DOM
-        div.remove();
         li.remove();
-
+        div.remove();
         // Delete the user from User.users array
         User.users = User.users.filter((user) => user.username != username);
-        console.log(`User Deleted: ${username}`);
+        // console.log(`User Deleted: ${username}`);
 
         // Find the first div in userNavItems
         const firstDiv = document.querySelector("#userNavItems > div");
+
         // Manually set bootstrap active and show classes
         // This makes it so the userDisplay displays another profile after one is deleted, instead of showing nothing
-        firstDiv.classList.add("active", "show");
+        firstDiv.classList.add("show", "active");
       });
 
       // No, take me back
@@ -556,8 +559,7 @@ class Admin extends GenericUser {
     });
   };
 
-  /**
-   * Adds delete buttons to each user profile, giving Admins the ability to
+  /* Adds delete buttons to each user profile, giving Admins the ability to
    * delete user profiles
    * Uses all of the above methods to facilitate
    * Loops through each instance of User, creates a button, gets the modal elements, and adds an event listener to the button
@@ -578,6 +580,8 @@ class Admin extends GenericUser {
     }
   };
 }
+
+// ASYNC STUFF ---------------------------------------
 
 /**
  * Decided to get some practice with async functions and using fetch()
@@ -844,6 +848,21 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     userNavListCollapse.classList.add("show");
   });
+});
+
+// BUG FIX FOR DELETING USERS ----------------------------------------------
+// When I manually add the "show active" classes to a User nav tab pane on line 552, it would persist even if I clicked another user
+// This caused two user profiles to be shown at the same time
+// By targeting the bootstrap event "shown.bs.tab" I can check if the first item on the list has "show active", and remove them manually
+document.addEventListener("shown.bs.tab", () => {
+  const firstDiv = document.querySelector("#userNavItems > div");
+
+  if (
+    firstDiv.classList.contains("show") ||
+    (firstDiv.classList.contains("active") && !firstDiv)
+  ) {
+    firstDiv.classList.remove("show", "active");
+  }
 });
 
 // AUDIO -------------------------------------------------
